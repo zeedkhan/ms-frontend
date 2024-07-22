@@ -32,6 +32,7 @@ const SaveBlog: React.FC<SaveBlogProps> = ({ payload, blogId, userId }) => {
                 description: description,
                 title: title,
                 userId: userId,
+                seoPath: "",
             });
             console.log(blog)
             return {
@@ -55,6 +56,7 @@ const SaveBlog: React.FC<SaveBlogProps> = ({ payload, blogId, userId }) => {
                 description: description,
                 title: title,
                 userId: userId,
+                seoPath: "",
             });
             console.log(blog)
             return {
