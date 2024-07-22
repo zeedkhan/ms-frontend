@@ -1,3 +1,11 @@
+declare class Highlight {
+  constructor(...range: Range[]);
+}
+
+declare namespace CSS {
+  var highlights: Map<string, Highlight>;
+}
+
 function getWordRange(element: Element, charIndex: number, charLength: number) {
   const range = document.createRange();
   const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null);
@@ -26,7 +34,7 @@ function getWordRange(element: Element, charIndex: number, charLength: number) {
   return range;
 }
 
-export function speech(element: HTMLElement) : SpeechSynthesis {
+export function speech(element: HTMLElement): SpeechSynthesis {
   const speechSynthesis = window.speechSynthesis;
   const utterance = new SpeechSynthesisUtterance(element.textContent || "");
   speechSynthesis.cancel();
