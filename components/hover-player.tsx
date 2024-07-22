@@ -1,14 +1,15 @@
 "use client";
 
 import { useHoveredParagraphCoordinate } from "@/hooks/use-mouse";
-import { getTopLevelReadableElementsOnPage } from "@/lib/parser";
 import { speech } from "@/lib/play";
 import { useEffect, useRef, useState } from "react";
 import PlayIcon from "./icon/play-icon";
 import PauseIcon from "./icon/pause-icon";
+import { getTopLevelReadableElementsOnPage } from "@/lib/parser";
+
 
 export default function HoverPlayer() {
-    const [allElements, setAllElments] = useState<HTMLElement[]>(getTopLevelReadableElementsOnPage());
+    const [allElements, setAllElments] = useState<HTMLElement[]>([]);
     const isHover = useHoveredParagraphCoordinate(allElements as HTMLElement[]);
     const [playRef, setPlayRef] = useState<SpeechSynthesis | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -76,6 +77,8 @@ export default function HoverPlayer() {
             }
         }
     };
+
+    if (!isHover) return null;
 
     return (
         <div

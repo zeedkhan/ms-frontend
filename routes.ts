@@ -45,17 +45,15 @@ export const AUTH_ROUTES = {
   user: process.env.NEXT_PUBLIC_GATEWAY + "/user",
   changePassword: process.env.NEXT_PUBLIC_GATEWAY + "/reset/pwd",
   verifyEmail: process.env.NEXT_PUBLIC_GATEWAY + "/token",
-  // createResetPasswordToken: process.env.NEXT_PUBLIC_GATEWAY,
-  // createVerityEmailToken: process.env.NEXT_PUBLIC_GATEWAY,
 };
 
 export const UPLOAD_ROUTES = {
   stroageDomain: process.env.NEXT_PUBLIC_STORAGE,
-  uploads: process.env.NEXT_PUBLIC_GATEWAY + "/upload",
-  editUserAvatar: process.env.NEXT_PUBLIC_GATEWAY + "/user/avatar"
+  uploads: process.env.NEXT_PUBLIC_UPLOAD + "/upload",
+  editUserAvatar: process.env.NEXT_PUBLIC_UPLOAD + "/user/avatar"
 }
 
 export const BLOG_ROUTES = {
   blog: process.env.NEXT_PUBLIC_GATEWAY + "/blog",
-  seoPathCheck: process.env.NEXT_PUBLIC_GATEWAY + "/blog/seo-path"
+  seoPathCheck: process.env.NEXT_PUBLIC_GATEWAY + "/blog/path"
 }

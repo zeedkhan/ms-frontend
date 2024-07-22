@@ -25,8 +25,6 @@ import ImageTool from "@editorjs/image";
 import { uploadFile } from "@/db/upload";
 import { getFile } from "@/lib/utils";
 
-
-
 interface EditorProps {
     data: OutputData;
     holder: string;

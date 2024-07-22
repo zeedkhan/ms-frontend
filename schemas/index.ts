@@ -41,7 +41,10 @@ export const blogSchema = z.object({
   description: z.string().optional(),
   userId: z.string(),
   content: z.object({}),
-  version: z.string(),
+  version: z.number(),
+  seoPath: z.string().regex(/^[a-z0-9-]+$/).min(4, {
+    message: "SEO path is required"
+  }),
 });
 
 export const UpdateUserAvatarSchema = z.object({

@@ -7,18 +7,14 @@ type Response = {
     error?: string
 }
 
-const duplicatedSeoPath = async (seoPath: string): Promise<boolean> => {
+const getBlogPath = async (seoPath: string): Promise<Blog | null> => {
     try {
         const request = await axios.get(`${BLOG_ROUTES.seoPathCheck}/${seoPath}`);
-        if (request.data) {
-            return true;
-        }
+        return request.data;
     } catch (err) {
         console.error(err);
-        return false;
+        return null;
     }
-    
-    return false;
 }
 
 const getBlogById = async (id: string): Promise<Blog | null> => {
@@ -57,13 +53,13 @@ const getUserBlogs = async (userId: string): Promise<Blog[]> => {
 
 // create a new blog
 const createBlog = async (payload: Blog): Promise<Response> => {
-    // const validatedFields = blogSchema.safeParse(payload);
-    // console.log(payload)
-    // if (!validatedFields.success) {
-    //     return { error: "Invalid fields!" };
-    // }
     try {
         const request = await axios.post(`${BLOG_ROUTES.blog}`, payload);
+        if (request.data.error) {
+            return {
+                error: request.data.error
+            }
+        }
         return {
             success: "Created!"
         }
@@ -118,5 +114,5 @@ export {
     createBlog,
     updateBlog,
     deleteBlog,
-    duplicatedSeoPath
+    getBlogPath
 }

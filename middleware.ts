@@ -19,7 +19,6 @@ export default auth((req) => {
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
-  console.log("Is match blog path", nextUrl.pathname.match(blogRoutes))
   if (nextUrl.pathname.match(blogRoutes)) {
     return null;
   }
