@@ -1,5 +1,5 @@
 import BlogId from "@/components/blog/blogId";
-import { getBlogById } from "@/db/blog";
+import { getBlogPath } from "@/db/blog";
 import { Metadata, ResolvingMetadata } from "next";
 
 
@@ -9,17 +9,17 @@ export async function generateMetadata(
 ): Promise<Metadata> {
     const id = params.id
 
-    const blog = await getBlogById(id);
+    const blog = await getBlogPath(id);
 
     return {
-        title: blog?.title || "",
+        title: blog?.seoPath || "",
         // openGraph: {},
     }
 }
 
 const Page = async ({ params }: { params: any }) => {
     const { id } = params;
-    const blog = await getBlogById(id);
+    const blog = await getBlogPath(id);
     if (!blog) {
         return null;
     }

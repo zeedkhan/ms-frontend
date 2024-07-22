@@ -11,7 +11,7 @@ import { Textarea } from "../ui/textarea";
 import SaveBlog from "./save-blog";
 import { Blog } from "@/types";
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
-import { duplicatedSeoPath } from "@/db/blog";
+import { getBlogPath } from "@/db/blog";
 
 let Editor = dynamic(() => import("./editor"), {
     ssr: false,
@@ -53,15 +53,16 @@ const NewEditor = ({ blog, blogId }: BlogEditor) => {
             userId: session?.user.id as string,
             description: description,
             content: content,
+            seoPath: seoPath,
+            version: 1,
         }
 
-    }, [title, description, content, session]);
+    }, [title, description, content, session, seoPath]);
 
     useEffect(() => {
         const params = new URLSearchParams(searchParams);
         params.set("editor", menus[selectIndex].title.toLowerCase());
         replace(`${pathname}?${params.toString()}`);
-
     }, [selectIndex]);
 
 
@@ -70,7 +71,9 @@ const NewEditor = ({ blog, blogId }: BlogEditor) => {
             const newPath = seoPath.trim().replace(/\s+/g, '-').toLowerCase();
             if (!!newPath) {
                 setSeoPath(newPath);
-                duplicatedSeoPath(newPath).then(setIsDuplicateSeoPath);
+                getBlogPath(newPath).then((res) => {
+                    setIsDuplicateSeoPath(res ? true : false);
+                });
             } 
         }, 1000);
 

@@ -6,6 +6,7 @@ import { OutputData } from "@editorjs/editorjs";
 // @ts-ignore
 import edjsParser from "editorjs-parser"
 import Markdown from "@/components/editor/markdown";
+import { useEffect, useState } from "react";
 
 
 function detectLanguage(codeString: string | null) {
@@ -49,22 +50,29 @@ type BlogIdProps = {
 };
 
 const BlogId: React.FC<BlogIdProps> = ({ content }) => {
+    const [parsedContent, setParsedContent] = useState<string[]>([]);
     const customParsers = {
         raw: function (data: any, config: any) {
             return `<code>${data.html}</code>`
         },
     }
 
-    const parser = new edjsParser(undefined, customParsers);
-    const markup = parser.parse(content);
+    useEffect(() => {
+        const parser = new edjsParser(undefined, customParsers);
+        const markup = parser.parse(content);
 
-    const par = new DOMParser();
-    const DOM = par.parseFromString(markup, "text/html");
-    const extractedDoms = traverseDom(DOM);
-    
+        const par = new DOMParser();
+        const DOM = par.parseFromString(markup, "text/html");
+        const extractedDoms = traverseDom(DOM);
+        setParsedContent(extractedDoms || []);
+
+    }, [content]);
+
+    if (!content || !content.blocks) return null;
+
     return (
         <div className="space-y-2 flex flex-col items-center justify-center pt-16 px-4">
-            {extractedDoms.map((dom, index) => (
+            {parsedContent.map((dom, index) => (
                 <div key={index}>
                     <Markdown content={dom || ""} />
                 </div>

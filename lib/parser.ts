@@ -32,7 +32,7 @@ const isValidDom = (node: Element): boolean => {
 
 
 export function getTopLevelReadableElementsOnPage(): HTMLElement[] {
-    const body = document.body;
+    const body = window && window.document && window.document.body || [];
 
     const findValidDom = () => {
         const childrens = [...Array.from(body.children)].filter((node) => !IGNORE_LIST.includes(node.tagName.toUpperCase()));

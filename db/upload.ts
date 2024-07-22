@@ -15,7 +15,6 @@ const uploadFile = async (file: File): Promise<ResponseUpload> => {
                 "Content-Type": "multipart/form-data"
             }
         });
-
         return res.data;
     } catch (err) {
         console.error(err);
