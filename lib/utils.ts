@@ -14,7 +14,7 @@ export function getFile(url: string | null = null, defaultPath: string) {
   if (!url) {
     return defaultPath
   }
-  const img = UPLOAD_ROUTES.stroageDomain + url;
+  const img = UPLOAD_ROUTES.stroageDomain + "/" + url;
   return img
 
 }
