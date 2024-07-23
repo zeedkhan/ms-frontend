@@ -72,12 +72,14 @@ const SaveBlog: React.FC<SaveBlogProps> = ({ payload, blogId, userId }) => {
         // update in database
         try {
             const blog = await updateBlog({
+                ...payload,
                 id: id,
+                seoPath: seoPath,
+                title: title,
+                version: version,
                 content: content,
                 description: description,
-                title: title,
                 userId: userId,
-                seoPath: "",
             });
             if (blog.error) {
                 toast.error(JSON.stringify(blog.error))
