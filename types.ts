@@ -17,7 +17,7 @@ export type Blog = {
     content: OutputData;
     description: string;
     userId: string;
-    version?: number;
+    version: number;
     seoPath: string;
 }
 

@@ -129,7 +129,7 @@ const NewEditor = ({ blog, blogId }: BlogEditor) => {
                                 placeholder="Add a description" />
                         </div>
 
-                        {isDuplicateSeoPath !== null && isDuplicateSeoPath && (
+                        {blog.seoPath !== seoPath && isDuplicateSeoPath !== null && isDuplicateSeoPath && (
                             <p className="text-red-500">Seo path already exists</p>
                         )}
 

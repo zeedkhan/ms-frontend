@@ -4,16 +4,15 @@ import { createBlog, updateBlog } from "@/db/blog";
 import { OutputData } from "@editorjs/editorjs";
 import { Button } from "../ui/button";
 import { toast } from "sonner"
-import { AxiosError } from "axios";
-import { useRouter } from "next/navigation";
 import { blogSchema } from "@/schemas";
+import { z, ZodObject } from "zod";
 
 
 type SaveBlogProps = {
     payload: SaveData
     blogId: string | null,
     userId: string;
-}
+} & React.HTMLProps<HTMLButtonElement>;
 
 type SaveData = {
     title: string,
@@ -25,8 +24,7 @@ type SaveData = {
     seoPath: string,
 }
 
-
-const SaveBlog: React.FC<SaveBlogProps> = ({ payload, blogId, userId }) => {
+const SaveBlog: React.FC<SaveBlogProps> = ({ payload, blogId, disabled, ...res }) => {
 
     const create = async ({ seoPath, title, userId, version = 1, content, description = "" }: SaveData) => {
         // save in database
@@ -52,6 +50,7 @@ const SaveBlog: React.FC<SaveBlogProps> = ({ payload, blogId, userId }) => {
                 description: description,
                 title: title,
                 userId: userId,
+                version: 1,
                 seoPath: seoPath,
             });
             if (blog.error) {
@@ -68,15 +67,15 @@ const SaveBlog: React.FC<SaveBlogProps> = ({ payload, blogId, userId }) => {
         }
     }
 
-    const edit = async ({ seoPath, id, title, userId, version, content, description = "" }: SaveData) => {
+    const edit = async ({ seoPath, id, title, userId, version = 1, content, description = "" }: SaveData) => {
         // update in database
         try {
             const blog = await updateBlog({
                 ...payload,
                 id: id,
-                seoPath: seoPath || "",
+                seoPath: seoPath,
                 title: title,
-                version: version,
+                version: Number(version),
                 content: content,
                 description: description,
                 userId: userId,
@@ -127,6 +126,7 @@ const SaveBlog: React.FC<SaveBlogProps> = ({ payload, blogId, userId }) => {
 
     return (
         <Button
+            disabled={disabled}
             size={"sm"}
             className="w-fit min-w-20 text-base" onClick={handleSave}
         >

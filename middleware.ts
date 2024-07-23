@@ -20,6 +20,9 @@ export default auth((req) => {
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
   if (nextUrl.pathname.match(blogRoutes)) {
+    if (nextUrl.pathname === "/blog/e" && !isLoggedIn) {
+      return Response.redirect(new URL("/", nextUrl));
+    }
     return null;
   }
 
