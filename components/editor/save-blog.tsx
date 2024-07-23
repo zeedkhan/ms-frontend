@@ -68,13 +68,13 @@ const SaveBlog: React.FC<SaveBlogProps> = ({ payload, blogId, userId }) => {
         }
     }
 
-    const edit = async ({ id, title, userId, version, content, description = "" }: SaveData) => {
+    const edit = async ({ seoPath, id, title, userId, version, content, description = "" }: SaveData) => {
         // update in database
         try {
             const blog = await updateBlog({
                 ...payload,
                 id: id,
-                seoPath: seoPath,
+                seoPath: seoPath || "",
                 title: title,
                 version: version,
                 content: content,
