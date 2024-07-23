@@ -1,3 +1,5 @@
+"use client";
+
 declare class Highlight {
   constructor(...range: Range[]);
 }
