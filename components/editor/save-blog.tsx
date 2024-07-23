@@ -5,8 +5,6 @@ import { OutputData } from "@editorjs/editorjs";
 import { Button } from "../ui/button";
 import { toast } from "sonner"
 import { blogSchema } from "@/schemas";
-import { z, ZodObject } from "zod";
-
 
 type SaveBlogProps = {
     payload: SaveData
@@ -130,7 +128,7 @@ const SaveBlog: React.FC<SaveBlogProps> = ({ payload, blogId, disabled, ...res }
             size={"sm"}
             className="w-fit min-w-20 text-base" onClick={handleSave}
         >
-            Save
+            {!blogId ? "Save" : "Update"}
         </Button>
     );
 }
