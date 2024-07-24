@@ -41,6 +41,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "editorjs-parser": "^1.5.3",
+    "framer-motion": "^11.3.16",
     "lucide-react": "^0.408.0",
     "next": "14.0.4",
     "next-auth": "^5.0.0-beta.4",

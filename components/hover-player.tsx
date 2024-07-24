@@ -8,9 +8,9 @@ import PauseIcon from "./icon/pause-icon";
 import { getTopLevelReadableElementsOnPage } from "@/lib/parser";
 
 
-export default function HoverPlayer() {
+export default function HoverPlayer({ scrollTop }: { scrollTop: number }) {
     const [allElements, setAllElments] = useState<HTMLElement[]>([]);
-    const isHover = useHoveredParagraphCoordinate(allElements as HTMLElement[]);
+    const isHover = useHoveredParagraphCoordinate(allElements as HTMLElement[], scrollTop);
     const [playRef, setPlayRef] = useState<SpeechSynthesis | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const playingElement = useRef<HTMLElement | null>(null);
@@ -25,12 +25,16 @@ export default function HoverPlayer() {
         }
     }, [isHover, playRef]);
 
+    /* 
+    * This is the function that will be called when the component is mounted
+    * It will create a mutation observer to observe the body of the document
+    * It will also add an event listener to the window to handle the beforeunload event
+    */
     useEffect(() => {
         const mutation = new MutationObserver(() => {
             const elements = getTopLevelReadableElementsOnPage() || [];
             setAllElments(elements);
         });
-
         mutation.observe(document.body, { childList: true, subtree: true });
 
         const handleBeforeUnload = () => {

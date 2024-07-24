@@ -5,7 +5,6 @@ import { auth } from "@/auth";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "./_provider/theme-provider";
-import HoverPlayer from "@/components/hover-player";
 import AdminPanelLayout from "@/components/layout/layout-wrapper";
 import { ContentLayout } from "@/components/layout/content-layout";
 
@@ -31,7 +30,6 @@ export default async function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <body className={inter.className}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <HoverPlayer />
             <Toaster />
             <AdminPanelLayout>
               <ContentLayout title="Your Blogs">
