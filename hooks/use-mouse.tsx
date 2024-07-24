@@ -40,38 +40,49 @@ export type HoveredElementInfo = {
 
 export function useHoveredParagraphCoordinate(
     parsedElements: HTMLElement[],
+    scrollTop: number
 ): HoveredElementInfo | null {
 
     const [hoveredElement, setHoveredElement] = useState<HoveredElementInfo | null>(null);
+    const mouseCoordinate = useMousePosition();
 
     const callback = useCallback(() => {
-        const onMouseMove = (event: MouseEvent) => {
-            const coordinates = { x: event.clientX, y: event.clientY };
-            const hoveredElement = parsedElements.find((element) => isPointInsideElement(coordinates, element));
-            const isPointPlayBtn = isPointInsideElement(coordinates, document.getElementById("hover-player") as HTMLElement);
-            if (isPointPlayBtn) {
-                return;
-            }
-            if (hoveredElement) {
-                const { top, left } = getElementBounds(hoveredElement);
-                const heightOfFirstLine = getLineHeightOfFirstLine(hoveredElement);
-                setHoveredElement({ element: hoveredElement, top, left, heightOfFirstLine });
-            } else {
-                setHoveredElement(null);
-            }
-        };
-
-        window.addEventListener('mousemove', onMouseMove);
-
-        return () => {
-            window.removeEventListener('mousemove', onMouseMove);
-        };
-    }, [parsedElements]);
-
+        if (speechSynthesis.speaking && !speechSynthesis.paused) return;
+        const hoveredElement = parsedElements.find((element) => isPointInsideElement(mouseCoordinate, element));
+        const isPointPlayBtn = isPointInsideElement(mouseCoordinate, document.getElementById("hover-player") as HTMLElement);
+        if (isPointPlayBtn) {
+            return;
+        }
+        if (hoveredElement) {
+            const { top, left } = getElementBounds(hoveredElement);
+            const heightOfFirstLine = getLineHeightOfFirstLine(hoveredElement);
+            setHoveredElement({ element: hoveredElement, top, left, heightOfFirstLine });
+        } else {
+            setHoveredElement(null);
+        }
+    }, [parsedElements, mouseCoordinate])
 
     useEffect(() => {
         callback();
-    }, [parsedElements, callback]);
+    }, [parsedElements, mouseCoordinate, callback, scrollTop]);
 
     return hoveredElement;
 }
+
+const useMousePosition = () => {
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+    useEffect(() => {
+        const updateMousePosition = (ev: MouseEvent) => {
+            setMousePosition({ x: ev.clientX, y: ev.clientY });
+        };
+
+        window.addEventListener('mousemove', updateMousePosition);
+
+        return () => {
+            window.removeEventListener('mousemove', updateMousePosition);
+        };
+    }, []);
+
+    return mousePosition;
+};

@@ -8,6 +8,13 @@ declare namespace CSS {
   var highlights: Map<string, Highlight>;
 }
 
+function clearHighlights(element: Element) {
+  const highlights = element.querySelectorAll('.highlight');
+  highlights.forEach((highlight) => {
+    highlight.classList.remove('highlight');
+  });
+}
+
 function getWordRange(element: Element, charIndex: number, charLength: number) {
   const range = document.createRange();
   const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null);
@@ -36,6 +43,16 @@ function getWordRange(element: Element, charIndex: number, charLength: number) {
   return range;
 }
 
+function wrapWordInSpan(element: Element, charIndex: number, charLength: number) {
+  const range = getWordRange(element, charIndex, charLength);
+  const span = document.createElement('span');
+  // span.className = 'highlight';
+  const highlight = new Highlight(range);
+  CSS.highlights.set("speech-word-highlight", highlight);
+  // range.surroundContents(span);
+  return span;
+}
+
 export function speech(element: HTMLElement): SpeechSynthesis {
   const speechSynthesis = window.speechSynthesis;
   const utterance = new SpeechSynthesisUtterance(element.textContent || "");
@@ -45,9 +62,10 @@ export function speech(element: HTMLElement): SpeechSynthesis {
   utterance.onboundary = (event) => {
     const startIndex = event.charIndex;
     const endIndex = event.charIndex + event.charLength;
-    const wordRange = getWordRange(element, startIndex, endIndex - startIndex);
-    const highlight = new Highlight(wordRange);
-    CSS.highlights.set("speech-word-highlight", highlight);
+    wrapWordInSpan(element, startIndex, endIndex - startIndex);
+    // const wordRange = getWordRange(element, startIndex, endIndex - startIndex);
+    // const highlight = new Highlight(wordRange);
+    // CSS.highlights.set("speech-word-highlight", highlight);
   };
 
   utterance.onend = () => {
