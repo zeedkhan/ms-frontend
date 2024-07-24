@@ -12,6 +12,8 @@ import SaveBlog from "./save-blog";
 import { Blog } from "@/types";
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { getBlogPath } from "@/db/blog";
+import { Button } from "../ui/button";
+import Link from "next/link";
 
 let Editor = dynamic(() => import("./editor"), {
     ssr: false,
@@ -74,7 +76,7 @@ const NewEditor = ({ blog, blogId }: BlogEditor) => {
                 getBlogPath(newPath).then((res) => {
                     setIsDuplicateSeoPath(res ? true : false);
                 });
-            } 
+            }
         }, 1000);
 
         return () => {
@@ -96,14 +98,29 @@ const NewEditor = ({ blog, blogId }: BlogEditor) => {
                             onClick={() => setSelectIndex(index)}
                             className={cn(
                                 "px-4 py-0.5 cursor-pointer",
-                                `${selectIndex === index ? "bg-green-300 dark:text-black" : ""}`)} key={index}>
+                                `${selectIndex === index ? "bg-green-300 dark:text-black hover:bg-green-400" : ""}`)} key={index}>
                             <p>{menu.title}</p>
                         </Card>
                     ))}
 
                 </div>
-                <SaveBlog payload={payload} userId={session.user.id} blogId={blogId} />
 
+                <div className="flex space-x-4">
+                    {blogId && (
+                        <Button
+                            className="border bg-green-300 text-black hover:bg-green-400"
+                        >
+                            <Link
+                                href={process.env.NEXT_PUBLIC_DOMAIN + `/blog/${blog.seoPath}`}
+                                rel="noopener noreferrer"
+                                target="_blank"
+                            >
+                                Preview
+                            </Link>
+                        </Button>
+                    )}
+                    <SaveBlog payload={payload} userId={session.user.id} blogId={blogId} />
+                </div>
             </div>
 
             {
