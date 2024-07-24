@@ -82,7 +82,7 @@ const SaveBlog: React.FC<SaveBlogProps> = ({ payload, blogId, disabled, ...res }
                 toast.error(JSON.stringify(blog.error))
             }
             if (blog.success) {
-                toast.success("Blog created!");
+                toast.success("Blog updated!");
             }
         } catch (err) {
             toast.error(JSON.stringify(err))
@@ -112,7 +112,6 @@ const SaveBlog: React.FC<SaveBlogProps> = ({ payload, blogId, disabled, ...res }
                 if (editBlog?.error) {
                     toast.error(JSON.stringify(editBlog.error))
                 }
-                toast.success("Blog updated!")
             }
             catch (err) {
                 console.error(err)
@@ -125,8 +124,7 @@ const SaveBlog: React.FC<SaveBlogProps> = ({ payload, blogId, disabled, ...res }
     return (
         <Button
             disabled={disabled}
-            size={"sm"}
-            className="w-fit min-w-20 text-base" onClick={handleSave}
+            className="w-fit min-w-20" onClick={handleSave}
         >
             {!blogId ? "Save" : "Update"}
         </Button>
