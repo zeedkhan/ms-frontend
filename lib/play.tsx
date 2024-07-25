@@ -45,12 +45,8 @@ function getWordRange(element: Element, charIndex: number, charLength: number) {
 
 function wrapWordInSpan(element: Element, charIndex: number, charLength: number) {
   const range = getWordRange(element, charIndex, charLength);
-  const span = document.createElement('span');
-  // span.className = 'highlight';
   const highlight = new Highlight(range);
   CSS.highlights.set("speech-word-highlight", highlight);
-  // range.surroundContents(span);
-  return span;
 }
 
 export function speech(element: HTMLElement): SpeechSynthesis {

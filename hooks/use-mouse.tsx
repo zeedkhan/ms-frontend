@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import useScroll from "./use-scroll";
 
 export function getElementBounds(elem: HTMLElement) {
     const bounds = elem.getBoundingClientRect();
@@ -39,12 +40,12 @@ export type HoveredElementInfo = {
 };
 
 export function useHoveredParagraphCoordinate(
-    parsedElements: HTMLElement[],
-    scrollTop: number
+    parsedElements: HTMLElement[]
 ): HoveredElementInfo | null {
 
     const [hoveredElement, setHoveredElement] = useState<HoveredElementInfo | null>(null);
     const mouseCoordinate = useMousePosition();
+    const { scrollTop } = useScroll();
 
     const callback = useCallback(() => {
         if (speechSynthesis.speaking && !speechSynthesis.paused) return;
@@ -63,7 +64,10 @@ export function useHoveredParagraphCoordinate(
     }, [parsedElements, mouseCoordinate])
 
     useEffect(() => {
-        callback();
+        const time = setTimeout(() => {callback()}, 50);
+        return () => {
+            clearTimeout(time);
+        };
     }, [parsedElements, mouseCoordinate, callback, scrollTop]);
 
     return hoveredElement;
@@ -71,7 +75,7 @@ export function useHoveredParagraphCoordinate(
 
 const useMousePosition = () => {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
+    
     useEffect(() => {
         const updateMousePosition = (ev: MouseEvent) => {
             setMousePosition({ x: ev.clientX, y: ev.clientY });
