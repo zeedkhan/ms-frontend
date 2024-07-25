@@ -51,7 +51,8 @@ export function useHoveredParagraphCoordinate(
         if (speechSynthesis.speaking && !speechSynthesis.paused) return;
         const hoveredElement = parsedElements.find((element) => isPointInsideElement(mouseCoordinate, element));
         const isPointPlayBtn = isPointInsideElement(mouseCoordinate, document.getElementById("hover-player") as HTMLElement);
-        if (isPointPlayBtn) {
+        const isPointPlayToolsElements = isPointInsideElement(mouseCoordinate, document.getElementById("hover-play-tools") as HTMLElement);
+        if (isPointPlayBtn || isPointPlayToolsElements) {
             return;
         }
         if (hoveredElement) {

@@ -1,14 +1,16 @@
 "use client";
 
-import { useHoveredParagraphCoordinate } from "@/hooks/use-mouse";
+import { isPointInsideElement, useHoveredParagraphCoordinate } from "@/hooks/use-mouse";
 import { speech } from "@/lib/play";
 import { useEffect, useRef, useState } from "react";
 import { getTopLevelReadableElementsOnPage } from "@/lib/parser";
 import PauseIcon from "../icon/pause-icon";
 import PlayIcon from "../icon/play-icon";
 import { Button } from "../ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuSubContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
-
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
+import { cn } from "@/lib/utils";
+import { AudioLines } from 'lucide-react';
 
 export default function HoverPlayer() {
     const [allElements, setAllElments] = useState<HTMLElement[]>([]);
@@ -18,11 +20,13 @@ export default function HoverPlayer() {
     const playingElement = useRef<HTMLElement | null>(null);
     const top = hoverElement ? hoverElement?.top || 0 : 0;
     const left = hoverElement ? hoverElement?.left || 0 : 0;
+    const [showTools, setShowTools] = useState(false);
 
     useEffect(() => {
         if (hoverElement && hoverElement.element === playingElement.current && playRef && speechSynthesis.speaking && !speechSynthesis.paused) {
             setIsPlaying(true);
         } else {
+            setShowTools(false);
             setIsPlaying(false);
         }
     }, [hoverElement, playRef]);
@@ -65,6 +69,7 @@ export default function HoverPlayer() {
                 setIsPlaying(false);
             }
             const newPlayRef = speech(element);
+
             playingElement.current = element;
             setPlayRef(newPlayRef);
             setIsPlaying(true);
@@ -85,51 +90,93 @@ export default function HoverPlayer() {
         }
     };
 
-    if (!hoverElement) return null;
+    useEffect(() => {
+        const handleClick = (e: MouseEvent) => {
+            if (!hoverElement?.element) return;
+            const mouseCoordinate = { x: e.clientX, y: e.clientY };
+            const clickInsideEl = isPointInsideElement(mouseCoordinate, hoverElement?.element);
+            const isPointPlayBtn = isPointInsideElement(mouseCoordinate, document.getElementById("hover-player") as HTMLElement);
+            const isPointPlayToolsElements = isPointInsideElement(mouseCoordinate, document.getElementById("hover-play-tools") as HTMLElement);
+            if (!clickInsideEl) {
+                setShowTools(false);
+            }
+            if (isPointPlayBtn || isPointPlayToolsElements) {
+                setShowTools(true);
+            };
+
+        }
+        window.addEventListener("click", handleClick);
+
+        return () => {
+            window.removeEventListener("click", handleClick)
+        }
+    }, [hoverElement])
 
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button
-                    variant="outline"
-                    size="icon"
-                    id="hover-player"
-                    hidden={!hoverElement}
-                    className="absolute w-8 h-8 bg-background border-2 border-blue-500 p-1 rounded-full cursor-pointer"
-                    onClick={handlePlayPauseClick}
-                    style={{
-                        top: top,
-                        transform: "translate(-50%,-50%)",
-                        left: left,
-                        opacity: 0.9,
-                        zIndex: 1000,
-                    }}    >
-                    {isPlaying ? (
-                        <PauseIcon
-                            className="h-6 w-6"
-                            hasGradient
-                            stops={[
-                                { color: `#b794f4`, offset: 0 },
-                                { color: `#ed64a6`, offset: 50 },
-                                { color: `#f56565`, offset: 100 },
-                            ]}
-                        />
-                    ) : (
-                        <PlayIcon
-                            className="h-6 w-6 rotate-90 scale-0 transition-transform ease-in-out duration-500 dark:rotate-0 dark:scale-100"
-                            hasGradient
-                            stops={[
-                                { color: `#b794f4`, offset: 0 },
-                                { color: `#ed64a6`, offset: 50 },
-                                { color: `#f56565`, offset: 100 },
-                            ]}
-                        />
-                    )}
-                </Button>
-            </DropdownMenuTrigger>
-            {/* <DropdownMenuSubContent className="w-40">
-                    asdasdasd
-            </DropdownMenuSubContent> */}
-        </DropdownMenu>
+        <>
+            <DropdownMenu open={showTools}>
+                <DropdownMenuTrigger asChild>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        hidden={!hoverElement}
+                        id="hover-player"
+                        onMouseEnter={() => {
+                            setShowTools(true)
+                        }}
+                        onMouseLeave={() => setShowTools(false)}
+                        className={cn(
+                            `${!hoverElement && "hidden"}`,
+                            `absolute w-8 h-8 bg-background border-2 border-blue-500 p-1 rounded-full cursor-pointer`)
+                        }
+                        onClick={handlePlayPauseClick}
+                        style={{
+                            top: top,
+                            transform: "translate(-50%,-50%)",
+                            left: left,
+                            opacity: 0.9,
+                            zIndex: 1000,
+                        }}
+                    >
+                        {isPlaying ? (
+                            <PauseIcon
+                                className="h-6 w-6"
+                                hasGradient
+                                stops={[
+                                    { color: `#b794f4`, offset: 0 },
+                                    { color: `#ed64a6`, offset: 50 },
+                                    { color: `#f56565`, offset: 100 },
+                                ]}
+                            />
+                        ) : (
+                            <PlayIcon
+                                className="h-6 w-6"
+                                hasGradient
+                                stops={[
+                                    { color: `#b794f4`, offset: 0 },
+                                    { color: `#ed64a6`, offset: 50 },
+                                    { color: `#f56565`, offset: 100 },
+                                ]}
+                            />
+                        )}
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                    id="hover-play-tools"
+                    className="border-none bg-transparent shadow-none min-w-fit flex flex-col space-y-2 justify-evenly"
+                    onMouseLeave={() => setShowTools(false)}
+                    onMouseEnter={() => setShowTools(true)}>
+                    <DropdownMenuItem className=" h-8">
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            className={cn(` w-8 h-8 bg-background border-2 border-blue-500 p-1 rounded-full cursor-pointer`)}
+                        >
+                            <AudioLines className="h-6 w-6" />
+                        </Button>
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </>
     );
 };
