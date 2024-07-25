@@ -71,7 +71,7 @@ const BlogId: React.FC<BlogIdProps> = ({ content }) => {
     if (!content || !content.blocks) return null;
 
     return (
-        <div className="space-y-2 flex flex-col items-center justify-center pt-16 px-4">
+        <div className="space-y-2 flex flex-col items-center justify-center  px-4">
             {parsedContent.map((dom, index) => (
                 <div key={index}>
                     <Markdown content={dom || ""} />
