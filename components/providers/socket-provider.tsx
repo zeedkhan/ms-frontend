@@ -37,7 +37,7 @@ export function SocketProvider({
 
     useEffect(() => {
         const socketInstance = new (io as any)(
-            "http://localhost:8004",
+            process.env.NEXT_PUBLIC_SOCKET_URL as string,
         );
 
         setSocket(socketInstance);
