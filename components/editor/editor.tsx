@@ -41,6 +41,7 @@ const EDITOR_TOOLS = {
             uploader: {
                 async uploadByFile(file: File) {
                     const res = await uploadFile(file, "blog");
+                    console.log("res", res);
                     return {
                         success: 1,
                         file: {
