@@ -47,7 +47,15 @@ export const blogSchema = z.object({
   }),
 });
 
-export const UpdateUserAvatarSchema = z.object({
+export const UploadFileToStorage = z.object({
+  userId: z.string().min(1),
+  key: z.string().min(1),
+  url: z.string().min(1),
+  name: z.string().min(1),
+  size: z.number().min(1),
+});
+
+export const UpdateAvatar = z.object({
   path: z.string().min(6, {
     message: "Image url is required"
   }),
@@ -66,37 +74,34 @@ export const NewPasswordSchema = z.object({
   }),
 });
 
-export const SettingsSchema = z
-  .object({
-    name: z.optional(z.string()),
-    role: z.enum([UserRole.ADMIN, UserRole.USER]),
-    email: z.optional(z.string().email()),
-    password: z.optional(z.string().min(6)),
-    newPassword: z.optional(z.string().min(6)),
-  })
-  .refine(
-    (data) => {
-      if (data.password && !data.newPassword) {
-        return false;
-      }
+export const SettingsSchema = z.object({
+  name: z.optional(z.string()),
+  role: z.enum([UserRole.ADMIN, UserRole.USER]),
+  email: z.optional(z.string().email()),
+  password: z.optional(z.string().min(6)),
+  newPassword: z.optional(z.string().min(6)),
+}).refine((data) => {
+  if (data.password && !data.newPassword) {
+    return false;
+  }
+  return true;
+}, {
+  message: "New password is required!",
+  path: ["newPassword"],
+}).refine((data) => {
+  if (data.newPassword && !data.password) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Password is required!",
+  path: ["password"],
+});
 
-      return true;
-    },
-    {
-      message: "New password is required!",
-      path: ["newPassword"],
-    }
-  )
-  .refine(
-    (data) => {
-      if (data.newPassword && !data.password) {
-        return false;
-      }
 
-      return true;
-    },
-    {
-      message: "Password is required!",
-      path: ["password"],
-    }
-  );
+export const createChatRoomSchema = z.object({
+  userIds: z.array(z.string()),
+  name: z.string().min(1, {
+    message: "Room name is required"
+  }),
+});

@@ -6,7 +6,9 @@ import {
     SquarePen,
     LayoutGrid,
     LucideIcon,
-    StickyNote
+    StickyNote,
+    DatabaseZap,
+    MessageSquareText
 } from "lucide-react";
 
 type Submenu = {
@@ -43,27 +45,15 @@ export function getMenuList(pathname: string): Group[] {
             ]
         },
         {
-            groupLabel: "Contents",
+            groupLabel: "Services",
             menus: [
                 {
-                    href: "/categories",
-                    label: "Categories",
-                    active: pathname.includes("/categories"),
-                    icon: Bookmark,
+                    href: "/chat",
+                    label: "Chat",
+                    active: pathname.includes("/chat"),
+                    icon: MessageSquareText,
                     submenus: []
                 },
-                {
-                    href: "/tags",
-                    label: "Tags",
-                    active: pathname.includes("/tags"),
-                    icon: Tag,
-                    submenus: []
-                }
-            ]
-        },
-        {
-            groupLabel: "Blog",
-            menus: [
                 {
                     href: "/blog/e",
                     label: "blog",
@@ -71,6 +61,13 @@ export function getMenuList(pathname: string): Group[] {
                     icon: StickyNote,
                     submenus: []
                 },
+                {
+                    href: "/storage",
+                    label: "Storage",
+                    active: pathname.includes("/storage"),
+                    icon: DatabaseZap,
+                    submenus: []
+                }
             ]
         },
         {

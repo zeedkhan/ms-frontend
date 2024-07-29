@@ -7,10 +7,19 @@ const nextConfig = {
             },
             {
                 hostname: "localhost"
+            },
+            {
+                hostname: "storage.googleapis.com"
             }
         ]
     },
-    output: "standalone",
+    webpack: (config, options) => {
+        config.module.rules.push({
+          test: /\.(pdf|html|csv)$/,
+          type: "asset/resource",
+        });
+        return config;
+      },
 }
 
 module.exports = nextConfig

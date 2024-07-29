@@ -1,7 +1,7 @@
 "use client";
 
 import { isPointInsideElement, useHoveredParagraphCoordinate } from "@/hooks/use-mouse";
-import { speech } from "@/lib/play";
+import { killSpeech, speech } from "@/lib/play";
 import { useEffect, useRef, useState } from "react";
 import { getTopLevelReadableElementsOnPage } from "@/lib/parser";
 import PauseIcon from "../icon/pause-icon";
@@ -10,7 +10,8 @@ import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import { cn } from "@/lib/utils";
-import { AudioLines } from 'lucide-react';
+import { AudioLines, Eraser } from 'lucide-react';
+import AISpeechBox from "./ai-speech-box";
 
 export default function HoverPlayer() {
     const [allElements, setAllElments] = useState<HTMLElement[]>([]);
@@ -21,6 +22,8 @@ export default function HoverPlayer() {
     const top = hoverElement ? hoverElement?.top || 0 : 0;
     const left = hoverElement ? hoverElement?.left || 0 : 0;
     const [showTools, setShowTools] = useState(false);
+
+    const [playText, setPlayText] = useState<string | null>(null);
 
     useEffect(() => {
         if (hoverElement && hoverElement.element === playingElement.current && playRef && speechSynthesis.speaking && !speechSynthesis.paused) {
@@ -59,6 +62,14 @@ export default function HoverPlayer() {
             }
         };
     }, []);
+
+    const killSpeechSynthesis = () => {
+        killSpeech();
+        setIsPlaying(false);
+        setPlayRef(null);
+        setPlayText(null);
+        playingElement.current = null;
+    }
 
     const handlePlayPauseClick = () => {
         if (!hoverElement) return;
@@ -168,6 +179,9 @@ export default function HoverPlayer() {
                     onMouseEnter={() => setShowTools(true)}>
                     <DropdownMenuItem className=" h-8">
                         <Button
+                            onClick={() => {
+                                setPlayText(hoverElement?.element ? hoverElement?.element.textContent : null);
+                            }}
                             variant="outline"
                             size="icon"
                             className={cn(` w-8 h-8 bg-background border-2 border-blue-500 p-1 rounded-full cursor-pointer`)}
@@ -175,8 +189,24 @@ export default function HoverPlayer() {
                             <AudioLines className="h-6 w-6" />
                         </Button>
                     </DropdownMenuItem>
+                    <DropdownMenuItem className=" h-8">
+                        <Button
+                            onClick={killSpeechSynthesis}
+                            variant="outline"
+                            size="icon"
+                            className={cn(` w-8 h-8 bg-background border-2 border-blue-500 p-1 rounded-full cursor-pointer`)}
+                        >
+                            <Eraser className="h-6 w-6" />
+                        </Button>
+                    </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
+
+
+            {/* {playText && (
+                <AISpeechBox text={playText} />
+            )} */}
+
         </>
     );
 };

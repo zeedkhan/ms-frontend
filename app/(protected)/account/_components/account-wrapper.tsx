@@ -31,8 +31,7 @@ const AccountWrapper = async () => {
     }
 
     return (
-        <ContentWrapper
-        >
+        <ContentWrapper>
             <Content session={session} userData={userData} />
         </ContentWrapper>
     );

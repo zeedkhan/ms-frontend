@@ -8,7 +8,7 @@ const IGNORE_LIST = [
     "H6",
     "BUTTON",
     "LABEL",
-    "SPAN",
+    // "SPAN",
     "IMG",
     "SVG",
     "PRE",
@@ -27,7 +27,7 @@ const isValidDom = (node: Element): boolean => {
         node.parentElement &&
         node.parentElement.children.length > 1 &&
         !node.querySelector(IGNORE_LIST.join(","))
-    ) || false; 
+    ) || false;
 };
 
 

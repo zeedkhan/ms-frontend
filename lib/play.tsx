@@ -42,9 +42,17 @@ function wrapWordInSpan(element: Element, charIndex: number, charLength: number)
   CSS.highlights.set("speech-word-highlight", highlight);
 }
 
+export function killSpeech() {
+  window.speechSynthesis.cancel();
+  CSS.highlights.clear();
+}
+
 export function speech(element: HTMLElement): SpeechSynthesis {
   const speechSynthesis = window.speechSynthesis;
   const utterance = new SpeechSynthesisUtterance(element.textContent || "");
+
+  console.log("element.textContent", element.innerText.replace(/\s+/g, ' '));
+  console.log("element.textContent", element.textContent);
   speechSynthesis.cancel();
   CSS.highlights.clear();
 

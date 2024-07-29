@@ -38,6 +38,8 @@ export const {
       if (session.user) {
         session.user.name = token.name;
         session.user.email = token.email;
+        // @ts-ignore
+        session.user.image = token.image
       }
 
       return session;
@@ -52,6 +54,7 @@ export const {
       token.name = existingUser.name;
       token.email = existingUser.email;
       token.role = existingUser.role;
+      token.image = existingUser.image
 
       return token;
     },

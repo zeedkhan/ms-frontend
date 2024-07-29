@@ -3,23 +3,26 @@
 import { FormError } from "@/components/form-error";
 import { FormSucess } from "@/components/form-sucess";
 import { Button } from "@/components/ui/button";
-import { uploadFile } from "@/db/upload";
-import { updateUserAvatar } from "@/db/user";
-import { UPLOAD_ROUTES } from "@/routes";
-import axios from "axios";
+import { ResponseUpload, uploadImage } from "@/db/upload";
+import { UpdateAvatar } from "@/schemas";
 import { Pencil } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { TypeOf } from "zod";
 
 type EditAvatarProps = {
     url: string;
-    userId: string;
+    objectId: string;
+    object: "user" | "chat";
+    callback: (payload: TypeOf<typeof UpdateAvatar>) => Promise<ResponseUpload>
 }
 
-
-const EditAvatar: React.FC<EditAvatarProps> = ({ url, userId }) => {
+const EditAvatar: React.FC<EditAvatarProps> = ({ url, objectId, callback, object }) => {
     const [img, setImg] = useState(url);
     const inputRef = useRef<null | HTMLInputElement>(null);
+    const session = useSession();
+
     const [preview, setPreview] = useState<string | null>(url);
     const [file, setFile] = useState<File | null>(null);
 
@@ -58,18 +61,29 @@ const EditAvatar: React.FC<EditAvatarProps> = ({ url, userId }) => {
     };
 
     const handleUpload = async () => {
-        if (!file || !preview) {
+        if (!file || !preview || !session.data?.user) {
             setError("Please select your image")
             return;
         }
         try {
-            const res = await uploadFile(file);
+            const res = await uploadImage(file, `${object}/${objectId}`);
             if (res?.storePath) {
-                console.log(res.storePath)
-                await updateUserAvatar({ id: userId as string, path: res.storePath })
-                setSuccess("Update image successfull");
-                setImg(preview)
-                setPreview(null);
+                // updateUserAvatar({ id: userId as string, path: res.storePath });
+                const updateAvatar = await callback({ id: objectId as string, path: res.storePath });
+
+                if (updateAvatar?.error) {
+                    setError(updateAvatar.error)
+                    return;
+                }
+                if (updateAvatar?.success) {
+                    console.log("Set image")
+                    await session.update({
+                        image: img
+                    })
+
+                    setSuccess("Updated successfully");
+                    setImg(preview);
+                }
             }
             if (res?.error) {
                 setError(res.error)
@@ -77,6 +91,9 @@ const EditAvatar: React.FC<EditAvatarProps> = ({ url, userId }) => {
         } catch (err) {
             console.error(err);
             setError("Something went wrong!")
+        } finally {
+            setFile(null);
+            setPreview(null);
         }
     }
 

@@ -40,7 +40,7 @@ const EDITOR_TOOLS = {
         config: {
             uploader: {
                 async uploadByFile(file: File) {
-                    const res = await uploadFile(file);
+                    const res = await uploadFile(file, "blog");
                     console.log("res", res);
                     return {
                         success: 1,

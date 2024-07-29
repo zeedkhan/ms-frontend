@@ -7,6 +7,17 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /* 
+  Remove extra slashes from the url
+  Example: https://example.com//path => https://example.com/path
+*/
+export const removeExtraSlashes = (url: string) => {
+  const [protocol, ...rest] = url.split('://');
+  const restOfUrl = rest.join('://');
+  const cleanedRest = restOfUrl.replace(/\/{2,}/g, '/');
+  return `${protocol}://${cleanedRest}`;
+}
+
+/* 
   Connect the path of the file to our upload service
   If we don't have the file return the default
 */
@@ -15,6 +26,62 @@ export function getFile(url: string | null = null, defaultPath: string) {
     return defaultPath
   }
   const img = UPLOAD_ROUTES.stroageDomain + "/" + url;
-  return img
-
+  return removeExtraSlashes(img)
 }
+
+export function openFileStorage(id: string) {
+  const path = process.env.NEXT_PUBLIC_DOMAIN + "/file/" + id;
+  return removeExtraSlashes(path)
+}
+
+export const waitForElm = (selector: string) => {
+  return new Promise(resolve => {
+    if (document.querySelector(selector)) {
+      return resolve(document.querySelector(selector));
+    }
+
+    const observer = new MutationObserver(() => {
+      if (document.querySelector(selector)) {
+        observer.disconnect();
+        resolve(document.querySelector(selector));
+      }
+    });
+
+    // If you get "parameter 1 is not of type 'Node'" error, see https://stackoverflow.com/a/77855838/492336
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  });
+}
+
+export const elementIsVisibleInViewport = (el: Element | null, partiallyVisible = false) => {
+  if (!el) return false;
+  const { top, left, bottom, right } = el.getBoundingClientRect();
+  const { innerHeight, innerWidth } = window;
+  return partiallyVisible
+    ? ((top > 0 && top < innerHeight) ||
+      (bottom > 0 && bottom < innerHeight)) &&
+    ((left > 0 && left < innerWidth) || (right > 0 && right < innerWidth))
+    : top >= 0 && left >= 0 && bottom <= innerHeight && right <= innerWidth;
+};
+
+export const isImage = (fileName: string) => {
+  return /\.(jpe?g|png|gif|bmp|tiff|webp)(\?.*)?$/i.test(fileName);
+};
+
+export const isVideo = (fileName: string) => {
+  return /\.(mp4|webm|ogg|ogv)(\?.*)?$/i.test(fileName);
+};
+
+export const isPDF = (fileName: string): boolean => {
+  return /\.pdf(\?.*)?$/i.test(fileName);
+};
+
+export const isHTML = (fileName: string): boolean => {
+  return /\.(html?|xhtml)(\?.*)?$/i.test(fileName);
+};
+
+export const fileUrl = (file: any) => {
+  return !file.url.startsWith("/uploads") ? file.url : getFile(file.url, file.url);
+};

@@ -22,9 +22,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Session } from "next-auth/types";
 import { logout } from "@/actions/logout";
+import { getFile } from "@/lib/utils";
 
 export function UserNav({ session }: { session: Session }) {
-    
     return (
         <DropdownMenu>
             <TooltipProvider disableHoverableContent>
@@ -36,7 +36,7 @@ export function UserNav({ session }: { session: Session }) {
                                 className="relative h-8 w-8 rounded-full"
                             >
                                 <Avatar className="h-8 w-8">
-                                    <AvatarImage src="#" alt="Avatar" />
+                                    <AvatarImage src={getFile(session.user.image || "", "")} alt="Avatar" />
                                     <AvatarFallback className="bg-transparent">JD</AvatarFallback>
                                 </Avatar>
                             </Button>
