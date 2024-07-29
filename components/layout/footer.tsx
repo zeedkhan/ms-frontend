@@ -4,6 +4,7 @@ import Link from "next/link";
 export function Footer() {
     return (
         <div className={cn(
+            "hidden md:block",
             "w-full bg-background/95 shadow backdrop-blur supports-[backdrop-filter]:bg-background/60",
             // `${isFixed && "fixed bottom-0"}`
         )}>

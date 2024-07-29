@@ -11,7 +11,6 @@ export default {
         const validatedFields = LoginSchema.safeParse(credentials);
         if (validatedFields.success) {
           const { email, password } = validatedFields.data;
-          
           const response = await axios.post(AUTH_ROUTES.singIn, { email, password });
           if (response.data?.error) {
             return null

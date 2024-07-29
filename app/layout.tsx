@@ -7,6 +7,10 @@ import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "./_provider/theme-provider";
 import AdminPanelLayout from "@/components/layout/layout-wrapper";
 import { ContentLayout } from "@/components/layout/content-layout";
+import { SocketProvider } from "@/components/providers/socket-provider";
+import HoverPlayer from "@/components/speech/hover-player";
+import Script from "next/script";
+import CombinedCapture from "@/components/capture/combine-capture";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,6 +21,7 @@ export const metadata: Metadata = {
     icon: "/icon.png",
   },
 };
+
 
 export default async function RootLayout({
   children,
@@ -31,13 +36,16 @@ export default async function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <body className={inter.className}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <Toaster />
-            <AdminPanelLayout>
-              <ContentLayout title="Your Blogs">
-                {children}
-              </ContentLayout>
-            </AdminPanelLayout>
-
+            <SocketProvider>
+              <Toaster />
+              <AdminPanelLayout>
+                <ContentLayout title="Your Blogs">
+                  {children}
+                </ContentLayout>
+              </AdminPanelLayout>
+            </SocketProvider>
+            <CombinedCapture />
+            <HoverPlayer />
           </ThemeProvider>
         </body>
       </html>

@@ -6,7 +6,6 @@ import { useStore } from "zustand";
 import { Footer } from "./footer";
 import { Sidebar } from "../sidebar/sidebar";
 import { useSession } from "next-auth/react";
-import HoverPlayer from "../speech/hover-player";
 
 export default function AdminPanelLayout({
     children
@@ -28,7 +27,6 @@ export default function AdminPanelLayout({
                     shouldShow
                 )}
             >
-                <HoverPlayer />
                 {children}
             </main>
             <footer

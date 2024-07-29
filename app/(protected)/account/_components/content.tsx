@@ -24,8 +24,9 @@ import { FormError } from "@/components/form-error";
 import { FormSucess } from "@/components/form-sucess";
 import { updateUser } from "@/db/user";
 import VerifyEmail from "./verify-email";
-import EditAvatar from "./edit-avatar";
 import { getFile } from "@/lib/utils";
+import { updateUserAvatar } from "@/db/user";
+import EditAvatar from "@/components/edit-avatar";
 
 
 type ContentProps = {
@@ -79,7 +80,9 @@ const Content: React.FC<ContentProps> = ({ session, userData }) => {
             <CardContent className="p-6">
                 <EditAvatar
                     url={getFile(userData.image, "https://cdn4.iconfinder.com/data/icons/avatars-xmas-giveaway/128/batman_hero_avatar_comics-512.png")}
-                    userId={userData.id}
+                    objectId={userData.id}
+                    object="user"
+                    callback={updateUserAvatar}
                 />
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)}>

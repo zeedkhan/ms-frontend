@@ -50,10 +50,18 @@ export const AUTH_ROUTES = {
 export const UPLOAD_ROUTES = {
   stroageDomain: process.env.NEXT_PUBLIC_STORAGE,
   uploads: process.env.NEXT_PUBLIC_UPLOAD + "/upload",
-  editUserAvatar: process.env.NEXT_PUBLIC_UPLOAD + "/user/avatar"
+  userStorage: process.env.NEXT_PUBLIC_GATEWAY + "/user/storage",
+  getFileId: process.env.NEXT_PUBLIC_GATEWAY + "/user/storage/file",
+  editUserAvatar: process.env.NEXT_PUBLIC_GATEWAY + "/user/avatar"
 }
 
 export const BLOG_ROUTES = {
   blog: process.env.NEXT_PUBLIC_GATEWAY + "/blog",
   seoPathCheck: process.env.NEXT_PUBLIC_GATEWAY + "/blog/path"
+}
+
+export const CHAT_ROUTES = {
+  userChats: process.env.NEXT_PUBLIC_GATEWAY + "/chat/user",
+  editChatAvatar: process.env.NEXT_PUBLIC_GATEWAY + "/chat/avatar",
+  chat: process.env.NEXT_PUBLIC_GATEWAY + "/chat",
 }
