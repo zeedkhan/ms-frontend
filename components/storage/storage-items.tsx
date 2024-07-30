@@ -100,9 +100,9 @@ const StorageItems: React.FC<StorageItemsProps> = ({ items }) => {
                 </div>
 
 
-                {selectedId && (
+                {/* {selectedId && (
                     <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-r from-teal-400/40 to-blue-500/40" />
-                )}
+                )} */}
 
                 <AnimatePresence>
                     {selectedId && (
