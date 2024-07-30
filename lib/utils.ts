@@ -81,7 +81,3 @@ export const isPDF = (fileName: string): boolean => {
 export const isHTML = (fileName: string): boolean => {
   return /\.(html?|xhtml)(\?.*)?$/i.test(fileName);
 };
-
-export const fileUrl = (file: any) => {
-  return !file.url.startsWith("/uploads") ? file.url : getFile(file.url, file.url);
-};

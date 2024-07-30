@@ -1,11 +1,11 @@
-import { fileUrl, isImage, isVideo } from "@/lib/utils";
+import { getFile, isImage, isVideo } from "@/lib/utils";
 import { Message } from "@/types";
 import { Package } from "lucide-react";
 
 const Video = ({ file }: { file: any }) => {
     return (
         <video
-            src={fileUrl(file)}
+            src={getFile(file, "")}
             controls
             className="max-w-80"
         />
@@ -16,7 +16,7 @@ const OtherFile = ({ file }: { file: any }) => {
     return (
         <div
             onClick={() => {
-                window.open(fileUrl(file));
+                window.open(getFile(file, ""));
             }}
             className="flex items-center justify-center flex-col">
             <Package size={75} />
@@ -39,7 +39,7 @@ export const File = ({ file }: { file: any }) => {
     }
 
     if (isImage(file.url)) {
-        return <img src={fileUrl(file)} alt={file.name} className="max-w-80 max-h-80" />
+        return <img src={getFile(file.url, "")} alt={file.name} className="max-w-80 max-h-80" />
     }
 
     return <OtherFile file={file} />
