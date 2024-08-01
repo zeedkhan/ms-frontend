@@ -26,10 +26,7 @@ export const AudioRecorderWithVisualizer = ({ className }: Props) => {
 
     const [allowMic, setAllowMic] = useState(true);
 
-    const { startSpeechDetection, stopSpeechDetection, isSpeaking } = useSpeechDetector({
-        onStartSpeaking: () => console.log('User started speaking'),
-        onStopSpeaking: () => console.log('User stopped speaking'),
-    });
+    const { startSpeechDetection, stopSpeechDetection, isSpeaking } = useSpeechDetector({ allowMic });
 
     const recorder = useRef<MediaRecorder | null>(null);
     const recordingChunks = useRef<BlobPart[]>([]);
@@ -46,18 +43,24 @@ export const AudioRecorderWithVisualizer = ({ className }: Props) => {
         audioContext: null,
     });
 
-    function startRecording() {
+    async function startRecording() {
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices
+            await navigator.mediaDevices
                 .getUserMedia({
-                    audio: true,
+                    audio: {
+                        sampleRate: 48000,
+                        channelCount: 2,
+                        autoGainControl: true,
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                    },
+
                 })
                 .then((stream) => {
-                    startSpeechDetection();
-
                     const AudioContext = window.AudioContext;
                     const audioCtx = new AudioContext();
                     const analyser = audioCtx.createAnalyser();
+
                     const source = audioCtx.createMediaStreamSource(stream);
                     source.connect(analyser);
                     mediaRecorderRef.current = {
@@ -77,11 +80,23 @@ export const AudioRecorderWithVisualizer = ({ className }: Props) => {
                     mediaRecorderRef.current.mediaRecorder = new MediaRecorder(stream, options);
                     mediaRecorderRef.current.mediaRecorder.start();
                     recordingChunks.current = [];
+
                     recorder.current = new MediaRecorder(stream);
-                    recorder.current.start();
+
                     recorder.current.ondataavailable = (e) => {
                         recordingChunks.current.push(e.data);
                     };
+
+                    recorder.current.onstop = () => {
+                        const recordBlob = new Blob(recordingChunks.current, { type: "audio/wav" });
+                        setCurrentRecord({
+                            ...currentRecord,
+                            file: window.URL.createObjectURL(recordBlob),
+                        });
+                        stopSpeechDetection();
+                        recordingChunks.current = [];
+                    };
+                    recorder.current.start();
                 })
                 .catch((error) => {
                     alert(error);
@@ -90,24 +105,18 @@ export const AudioRecorderWithVisualizer = ({ className }: Props) => {
         }
     }
 
-    function stopRecording() {
+    async function stopRecording() {
         if (recorder.current) {
-            recorder.current.onstop = () => {
-                const recordBlob = new Blob(recordingChunks.current, { type: "audio/wav" });
-
-                setCurrentRecord({
-                    ...currentRecord,
-                    file: window.URL.createObjectURL(recordBlob),
-                });
-                recordingChunks.current = [];
-            };
             recorder.current.stop();
         }
-        stopSpeechDetection();
     }
 
     function resetRecording() {
         const { mediaRecorder, stream, analyser, audioContext } = mediaRecorderRef.current;
+        stopRecording();
+
+        stopSpeechDetection();
+        recorder.current = null;
 
         if (mediaRecorder) {
             mediaRecorder.onstop = () => {
@@ -130,7 +139,6 @@ export const AudioRecorderWithVisualizer = ({ className }: Props) => {
     }
 
     const handleSubmit = () => {
-        stopRecording();
         if (currentRecord.file) {
             const downloadLink = document.createElement("a");
             downloadLink.href = currentRecord.file;
@@ -141,13 +149,19 @@ export const AudioRecorderWithVisualizer = ({ className }: Props) => {
         }
     };
 
-    useEffect(() => {
+    const handleClick = () => {
+        setAllowMic(!allowMic);
         if (!allowMic) {
-            stopRecording();
+            stopSpeechDetection(); // Assuming stopSpeechDetection calls the stop function in useSpeechDetector
         } else {
-            startRecording()
+            startSpeechDetection()
         }
-    }, [allowMic]);
+    };
+
+    useEffect(() => {
+        startRecording();
+        startSpeechDetection()
+    }, []);
 
     return (
         <div className={cn("flex h-16 rounded-md relative w-full items-center justify-center gap-2 max-w-5xl", "border-none p-0", className)}>
@@ -157,7 +171,7 @@ export const AudioRecorderWithVisualizer = ({ className }: Props) => {
                     <span> Reset recording</span>
                 </Button>
 
-                <Button onClick={() => setAllowMic(!allowMic)} size={"icon"}>
+                <Button onClick={handleClick} size={"icon"}>
                     {allowMic ? <Mic size={15} /> : <MicOff size={15} />}
                 </Button>
 
