@@ -17,6 +17,15 @@ export const removeExtraSlashes = (url: string) => {
   return `${protocol}://${cleanedRest}`;
 }
 
+export const downloadBlob = (blob: Blob) => {
+  const downloadLink = document.createElement("a");
+  downloadLink.href = URL.createObjectURL(blob);
+  downloadLink.download = `Audio_${new Date().getMilliseconds()}.mp3`;
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
+};
+
 /* 
   Connect the path of the file to our upload service
   If we don't have the file return the default
