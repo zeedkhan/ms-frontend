@@ -217,7 +217,7 @@ export const AudioRecorderWithVisualizer = ({ className }: Props) => {
 
     const testSpeech = async (filePath: string) => {
         if (!speechRef.current) return;
-        const url = `http://localhost:8003/transcription/transcribe-and-completeion`;
+        const url = `${UPLOAD_ROUTES.uploadTranscript}/transcribe-and-completeion`;
 
         const response = await axios.post(url, { filePath, messages: currentMessage }, {
             headers: {
@@ -225,7 +225,7 @@ export const AudioRecorderWithVisualizer = ({ className }: Props) => {
             }
         });
 
-        const playbackURL = `http://localhost:8003/transcription/generate-audio?text=${encodeURIComponent(response.data.assistantTranscription)}`
+        const playbackURL = `${UPLOAD_ROUTES.uploadTranscript}/generate-audio?text=${encodeURIComponent(response.data.assistantTranscription)}`
         const request = await fetch(playbackURL);
 
         setCurrentMessage((prev) => {
