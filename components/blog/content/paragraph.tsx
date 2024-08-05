@@ -1,3 +1,4 @@
+import Markdown from '@/components/editor/markdown';
 import React from 'react';
 
 interface ParagraphProps {
@@ -7,7 +8,7 @@ interface ParagraphProps {
 const Paragraph: React.FC<ParagraphProps> = ({ text }) => {
     return (
         <div className='rounded-lg p-2'>
-            <p>{text}</p>
+            <Markdown content={text} />
             {/* <Separator className="border-xl bg-gray-200 w-full h-[.5px] " /> */}
         </div>
     );

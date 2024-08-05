@@ -79,7 +79,7 @@ export const AudioRecorderWithVisualizer = ({ className }: Props) => {
     const [options, setOptions] = useState<SpeechDetectionOptions>({
         continuous: true,
         interimResults: true,
-        lang: "th-TH",
+        lang: "en-US",
     });
     const [processing, setProcessing] = useState(false);
     const [startConversation, setStartConversation] = useState(false);
@@ -135,34 +135,30 @@ export const AudioRecorderWithVisualizer = ({ className }: Props) => {
             };
 
             mediaRecorder.onstop = async () => {
-                stopSpeechDetection();
-                if (processing) return;
+                // stopSpeechDetection();
+                // setProcessing(true);
                 const recordBlob = new Blob(recorderChunks.current, { type: "audio/wav" });
                 if (recordBlob.size > 0) {
-                    console.log("recordingChunks", recorderChunks.current)
+                    console.log("recordingChunks", recorderChunks.current);
                     setCurrentRecord({
                         ...currentRecord,
                         file: window.URL.createObjectURL(recordBlob),
                     });
 
-
-                    // should disable speaking for awhile and wait for AI to process the audio
-                    setProcessing(true);
-                    const response = await uploadFile(new File([recordBlob], `mic/test.wav`), "conversation")
-                    console.log(response)
-
+                    const response = await uploadFile(new File([recordBlob], `mic/test.wav`), "conversation");
+                    console.log(response);
                     if (response.error) {
-                        toast.error(response.error);
+                        toast.error(<div className='dark:text-white'>{JSON.stringify(response.error)}</div>);
                         console.error(response);
                     }
 
                     if (response.storePath) {
-                        toast.success(JSON.stringify(response.success));
+                        toast.success(<div className='dark:text-white'>{JSON.stringify(response.success)}</div>);
                         console.log(response.success);
                         await testSpeech(response.storePath);
                     }
                 }
-
+                // setProcessing(false);
             };
 
             mediaRecorder.start();
@@ -178,7 +174,8 @@ export const AudioRecorderWithVisualizer = ({ className }: Props) => {
 
     async function stopRecording() {
         if (mediaRecorder?.mediaRecorder) {
-            mediaRecorder?.mediaRecorder.stop();
+            stopSpeechDetection();
+            mediaRecorder.mediaRecorder.stop();
         }
     }
 
@@ -190,7 +187,7 @@ export const AudioRecorderWithVisualizer = ({ className }: Props) => {
         } else {
             if (startConversation) {
                 startSpeechDetection();
-                setStartConversation(true)
+                setStartConversation(true);
                 if (mediaRecorder?.mediaRecorder) {
                     mediaRecorder.mediaRecorder.start();
                 }
@@ -212,83 +209,57 @@ export const AudioRecorderWithVisualizer = ({ className }: Props) => {
         startRecording();
         startSpeechDetection();
         setStartConversation(!startConversation);
-    }
+    };
 
     const speechRef = useRef<HTMLAudioElement>(null);
 
     const testSpeech = async (filePath: string) => {
         if (!speechRef.current) return;
+        setProcessing(true);
         const url = `${UPLOAD_ROUTES.uploadTranscript}/transcribe-and-completeion`;
 
         const response = await axios.post(url, { filePath, messages: currentMessage });
 
-        const playbackURL = `${UPLOAD_ROUTES.uploadTranscript}/generate-audio?text=${encodeURIComponent(response.data.assistantTranscription)}`
+        const playbackURL = `${UPLOAD_ROUTES.uploadTranscript}/generate-audio?text=${encodeURIComponent(response.data.assistantTranscription)}`;
         const request = await fetch(playbackURL);
 
-        setCurrentMessage((prev) => {
-            return [
-                ...prev,
-                { role: "user", content: response.data.humanTranscription },
-                { role: "assistant", content: response.data.assistantTranscription }
-            ]
-        })
+        setCurrentMessage((prev) => [
+            ...prev,
+            { role: "user", content: response.data.humanTranscription },
+            { role: "assistant", content: response.data.assistantTranscription },
+        ]);
+
+        speechRef.current.src = playbackURL;
 
         speechRef.current.onended = () => {
-            setTimeout(() => {
-                setProcessing(false)
-            }, 1000);
-        }
-        speechRef.current.src = playbackURL;
-        speechRef.current
-            .play()
-            .then(() => {
-                console.log("Audio playing...");
-            })
-            .catch((err) => {
-                console.error("Error playing audio:", err);
-            });
+            console.log("Ending playing AI voice....");
+            setProcessing(false);
+        };
 
-    }
+        speechRef.current.oncanplaythrough = () => {
+            console.log("Audio is fully buffered and can play through....");
+            if (speechRef.current) {
+                speechRef.current.play().catch((err) => console.error("Error playing audio:", err));
+            }
+            setProcessing(true);
+        };
+    };
 
     useEffect(() => {
-        // Auto detection should be
         if (!isSpeaking && mediaRecorder?.mediaRecorder) {
             mediaRecorder.mediaRecorder.stop();
             mediaRecorder.mediaRecorder.start();
-            console.log("Triggered")
         }
     }, [isSpeaking, mediaRecorder, startConversation]);
-
 
     return (
         <div className={cn("flex h-16 rounded-md relative w-full items-center justify-center gap-2 max-w-5xl", "border-none p-0", className)}>
             {/* display the record audio */}
-
-            <audio ref={speechRef} crossOrigin="anonymous">
-
-            </audio>
-
-
+            <audio ref={speechRef} crossOrigin="anonymous"> </audio>
             <EnhanceButton>
                 Start Speech Testing
             </EnhanceButton>
-
-            {/* {
-                currentRecord.file && (
-                    <audio
-                        controls
-                        src={currentRecord.file}
-                        className="w-full h-20"
-                    />
-                )
-            } */}
-
             <div className="flex gap-2">
-                {/* <Button onClick={resetRecording} size={"icon"} variant={"destructive"}>
-                    <Trash size={15} />
-                    <span> Reset recording</span>
-                </Button> */}
-
                 <EnhanceButton
                     disabled={startConversation || processing}
                     onClick={handleMic}
@@ -297,11 +268,6 @@ export const AudioRecorderWithVisualizer = ({ className }: Props) => {
                 >
                     {allowMic ? <Mic size={15} /> : <MicOff size={15} />}
                 </EnhanceButton>
-
-                {/* <Button onClick={handleSubmit} size={"icon"}>
-                    <Download size={15} />
-                </Button> */}
-
                 <Select onValueChange={handleChangeLanguage} defaultValue={options.lang}>
                     <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="Select language" />
@@ -317,7 +283,6 @@ export const AudioRecorderWithVisualizer = ({ className }: Props) => {
                         </SelectGroup>
                     </SelectContent>
                 </Select>
-
                 <EnhanceButton
                     disabled={!allowMic || processing}
                     variant={"ringHover"}
@@ -326,10 +291,7 @@ export const AudioRecorderWithVisualizer = ({ className }: Props) => {
                     {startConversation ? "Stop Conversation" : "Start Conversation"}
                 </EnhanceButton>
             </div>
-
-            {(processing || isSpeaking) && (
-                <AiLoader thinking={processing} />
-            )}
+            <AiLoader thinking={processing} listening={isSpeaking} />
         </div>
     );
 };

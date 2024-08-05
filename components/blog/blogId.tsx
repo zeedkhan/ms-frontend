@@ -16,21 +16,27 @@ import AudioPlayer from "./content/audio-player";
 import Mermaid from "./content/mermaid";
 import EmbedComponent from "./content/embed";
 import { ChevronDown } from "lucide-react";
+// @ts-ignore
+import edjsParser from "editorjs-parser"
+
 
 type BlogIdProps = {
     content: OutputData;
 };
 
-const customRender = (blocks: OutputData['blocks']) => {
-    return blocks.map(block => {
+const customRender = (content: OutputData) => {
+
+    const parser = new edjsParser(undefined);
+
+    return content.blocks.map((block) => {
         switch (block.type) {
             case "embed":
                 return <EmbedComponent block={block} />
             case "image":
                 return <ImageComponent block={block} />
-            case "header":
+            case "header":                
                 return <>
-                    <h1 className="font-semibold">{block.data.text}</h1>
+                    <Markdown content={block.data.text} />
                     <Separator className="border-xl bg-gray-200 w-full h-0.5 " />
                 </>
             case "paragraph":
@@ -56,7 +62,7 @@ const customRender = (blocks: OutputData['blocks']) => {
             case "mermaid":
                 return <Mermaid code={block.data.code} caption={block.data.caption} />
             default:
-                return <>{JSON.stringify(block)}</>
+                return <Markdown content={block.data} />
         }
     })
 }
@@ -65,7 +71,7 @@ const BlogId: React.FC<BlogIdProps> = ({ content }) => {
     const [test, setTest] = useState<ReactNode[]>([]);
 
     useEffect(() => {
-        setTest(customRender(content.blocks));
+        setTest(customRender(content));
     }, [content]);
 
     if (!content || !content.blocks) return null;
