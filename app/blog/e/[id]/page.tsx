@@ -1,5 +1,10 @@
 import CreateBlog from "@/components/blog/create-blog";
 import { getBlogById } from "@/db/blog";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Edit Blog",
+};
 
 const Page = async ({ params }: { params: any }) => {
     const { id } = params;

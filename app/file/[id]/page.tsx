@@ -2,6 +2,12 @@ import { auth } from "@/auth";
 import Pdf from "@/components/files/pdf";
 import { getFileId } from "@/db/user";
 import { isPDF } from "@/lib/utils";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "File",
+};
+
 
 export default async function FilePage(
     { params, searchParams }: { params: { id: string }; searchParams: URLSearchParams },

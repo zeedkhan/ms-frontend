@@ -6,24 +6,27 @@ import CheckList from "@editorjs/checklist";
 import Code from "@editorjs/code";
 //@ts-ignore
 import Delimiter from "@editorjs/delimiter";
-import Embed from "@editorjs/embed";
+// import Embed from "@editorjs/embed";
 //@ts-ignore
 import InlineCode from "@editorjs/inline-code";
 //@ts-ignore
 import List from "@editorjs/list";
 import Quote from "@editorjs/quote";
 import Table from "@editorjs/table";
-import SimpleImage from "@editorjs/simple-image";
 //@ts-ignore
 import Paragraph from "@editorjs/paragraph";
 import Header from "@editorjs/header";
 //@ts-ignore
 import Raw from "@editorjs/raw";
+import AudioPlayer from 'editorjs-audio-player';
+import MermaidTool from 'editorjs-mermaid';
 
+import AttachesTool from '@editorjs/attaches';
 import "./editor-style.css"
 import ImageTool from "@editorjs/image";
 import { uploadFile } from "@/db/upload";
 import { getFile } from "@/lib/utils";
+import Embed from "./editor-embed";
 
 interface EditorProps {
     data: OutputData;
@@ -33,49 +36,73 @@ interface EditorProps {
     blogId: string | null;
 }
 
-const EDITOR_TOOLS = {
-    code: Code,
-    image: {
-        class: ImageTool as unknown as ToolConstructable,
-        config: {
-            uploader: {
-                async uploadByFile(file: File) {
-                    const res = await uploadFile(file, "blog");
-                    console.log("res", res);
-                    return {
-                        success: 1,
-                        file: {
-                            url: getFile(res.storePath, "image")
-                        },
+
+const Editor: React.FC<EditorProps> = ({ data, holder, onChange, userId, blogId }) => {
+    const EDITOR_TOOLS = {
+        embed: Embed,
+        code: Code,
+        mermaid: MermaidTool,
+        audioPlayer: AudioPlayer,
+        image: {
+            class: ImageTool as unknown as ToolConstructable,
+            config: {
+                uploader: {
+                    async uploadByFile(file: File) {
+                        const res = await uploadFile(file, "blog");
+                        console.log("res", res);
+                        return {
+                            success: 1,
+                            file: {
+                                url: getFile(res.storePath, "image")
+                            },
+                        }
                     }
                 }
             }
-        }
-    },
-    header: {
-        class: Header,
-        shortcut: "CMD+H",
-        inlineToolbar: true,
-        config: {
-            placeholder: "Enter a Header",
-            levels: [2, 3, 4],
-            defaultLevel: 2,
         },
-    },
-    paragraph: {
-        class: Paragraph,
-        // shortcut: 'CMD+P',
-        inlineToolbar: true,
-    },
-    checklist: CheckList,
-    inlineCode: InlineCode,
-    table: Table,
-    list: List,
-    quote: Quote,
-    delimiter: Delimiter,
-    raw: Raw,
-};
-const Editor: React.FC<EditorProps> = ({ data, holder, onChange, userId, blogId }) => {
+        attaches: {
+            class: AttachesTool,
+            config: {
+                uploader: {
+                    async uploadByFile(file: File) {
+                        const res = await uploadFile(file, "blog");
+                        console.log("res", res);
+                        const extension = res.storePath?.split(".").pop();
+                        return {
+                            success: 1,
+                            file: {
+                                url: getFile(res.storePath, "image"),
+                                filename: "Untitled",
+                                extension: extension,
+                            },
+                        }
+                    }
+                }
+            }
+        },
+        header: {
+            class: Header,
+            shortcut: "CMD+H",
+            inlineToolbar: true,
+            config: {
+                placeholder: "Enter a Header",
+                levels: [2, 3, 4],
+                defaultLevel: 2,
+            },
+        },
+        paragraph: {
+            class: Paragraph,
+            // shortcut: 'CMD+P',
+            inlineToolbar: true,
+        },
+        checklist: CheckList,
+        inlineCode: InlineCode,
+        table: Table,
+        list: List,
+        quote: Quote,
+        delimiter: Delimiter,
+        raw: Raw,
+    };
 
     const editorRef = useRef<EditorJS | null>(null);
 
@@ -84,13 +111,14 @@ const Editor: React.FC<EditorProps> = ({ data, holder, onChange, userId, blogId 
         //initialize editor if we don't have a reference
         if (!editorRef.current) {
             const editor = new EditorJS({
+
                 holder: holder,
                 placeholder: "Start writting here..",
                 tools: EDITOR_TOOLS,
                 data,
                 async onChange(api, event) {
                     const content = await api.saver.save();
-                    // console.log(content, "sdfb");
+                    console.log(content, "sdfb");
                     onChange(content);
                 },
             });

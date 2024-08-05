@@ -8,13 +8,9 @@ body,
   height: 100%;
 }
 
-.custom-bg {
-  background-image: linear-gradient(to top, #fbc2eb 0%, #a6c1ee 100%);
-}
-
 /* Shad CN UI added pointer event none to those pop up element, eg: Dropdown, Dialog etc.. */
 body {
-  pointer-events: auto!important;
+  pointer-events: auto !important;
 }
 
 ::highlight(speech-paragraph-highlight) {
@@ -93,7 +89,29 @@ body {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Custom */
+.custom-bg {
+  background-image: linear-gradient(to top, #fbc2eb 0%, #a6c1ee 100%);
+}
+
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 10px;
+  z-index: 999;
+  transform-origin: 0%;
+}
+
+
+/* Mermaid */
+.mermaid-input {
+  background: white;
 }
