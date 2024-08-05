@@ -1,7 +1,7 @@
 import BlogId from "@/components/blog/blogId";
 import { getBlogPath } from "@/db/blog";
 import { Metadata, ResolvingMetadata } from "next";
-
+import Scroll from "./_scroll";
 
 export async function generateMetadata(
     { params, searchParams }: { params: { id: string }; searchParams: URLSearchParams },
@@ -20,10 +20,16 @@ export async function generateMetadata(
 const Page = async ({ params }: { params: any }) => {
     const { id } = params;
     const blog = await getBlogPath(id);
+
     if (!blog) {
         return null;
     }
-    return <BlogId content={blog.content} />
+    return (
+        <>
+            <Scroll />
+            <BlogId content={blog.content} />
+        </>
+    )
 }
 
 export default Page;

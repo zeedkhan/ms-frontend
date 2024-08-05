@@ -9,10 +9,10 @@ import { cn } from "@/lib/utils"
 const MemoizedReactMarkdown: FC<Options> = memo(ReactMarkdown, (prevProps, nextProps) => prevProps.children === nextProps.children && prevProps.className === nextProps.className)
 
 export default function Markdown({ content }: { content: string }) {
-    
+
     return (
         <MemoizedReactMarkdown
-            className="prose dark:prose-invert"
+            className="prose dark:prose-dark max-w-none"
             rehypePlugins={[rehypeRaw]}
             remarkPlugins={[remarkGfm, remarkMath]}
             components={{

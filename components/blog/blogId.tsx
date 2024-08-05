@@ -1,83 +1,88 @@
 "use client";
 
-
 import { OutputData } from "@editorjs/editorjs";
-
-// @ts-ignore
-import edjsParser from "editorjs-parser"
 import Markdown from "@/components/editor/markdown";
-import { useEffect, useState } from "react";
-
-
-function detectLanguage(codeString: string | null) {
-    if (!codeString) return false;
-    const languages = {
-        python: [/def /, /import /, /print\(/],
-        javascript: [/function /, /console\.log/, /let /, /const /],
-        java: [/public class /, /System\.out\.println/, /import java\./],
-        cpp: [/#include/, /cout<<</, /std::/],
-    };
-
-    for (const [language, patterns] of Object.entries(languages)) {
-        if (patterns.some(pattern => pattern.test(codeString))) {
-            return language;
-        }
-    }
-
-    return false;
-}
-
-const traverseDom = (DOM: Document) => {
-    const body = DOM.body;
-    let temp: Element | null = body.firstElementChild;
-    const allDoms = [];
-    while (temp) {
-        const isProgramming = detectLanguage(temp.textContent)
-        if (isProgramming) {
-            allDoms.push('```' + isProgramming + temp.textContent)
-        } else {
-            allDoms.push(temp.innerHTML)
-        }
-
-        temp = temp.nextElementSibling
-    }
-
-    return allDoms;
-}
+import { ReactNode, useEffect, useState } from "react";
+import File from "./content/file";
+import { Card, CardContent } from "../ui/card";
+import Paragraph from "./content/paragraph";
+import { Separator } from "@radix-ui/react-dropdown-menu";
+import List from "./content/list";
+import CheckList from "./content/check-list";
+import Quote from "./content/quote";
+import TableBlock from "./content/table-block";
+import ImageComponent from "./content/image";
+import AudioPlayer from "./content/audio-player";
+import Mermaid from "./content/mermaid";
+import EmbedComponent from "./content/embed";
+import { ChevronDown } from "lucide-react";
 
 type BlogIdProps = {
     content: OutputData;
 };
 
+const customRender = (blocks: OutputData['blocks']) => {
+    return blocks.map(block => {
+        switch (block.type) {
+            case "embed":
+                return <EmbedComponent block={block} />
+            case "image":
+                return <ImageComponent block={block} />
+            case "header":
+                return <>
+                    <h1 className="font-semibold">{block.data.text}</h1>
+                    <Separator className="border-xl bg-gray-200 w-full h-0.5 " />
+                </>
+            case "paragraph":
+                return <Paragraph text={block.data.text} />
+            case "raw":
+                return <Markdown content={block.data.html} />
+            case "code":
+                return <Markdown content={block.data.code} />
+            case "list":
+                return <List block={block} />
+            case "attaches":
+                return <File block={block} />
+            case "checklist":
+                return <CheckList block={block} />
+            case "quote":
+                return <Quote block={block} />
+            case "table":
+                return <TableBlock block={block} />
+            case "delimiter":
+                return <Separator className="border-xl bg-gray-200 w-full h-0.5 my-5" />
+            case "audioPlayer":
+                return <AudioPlayer src={block.data.src as string} />
+            case "mermaid":
+                return <Mermaid code={block.data.code} caption={block.data.caption} />
+            default:
+                return <>{JSON.stringify(block)}</>
+        }
+    })
+}
+
 const BlogId: React.FC<BlogIdProps> = ({ content }) => {
-    const [parsedContent, setParsedContent] = useState<string[]>([]);
-    const customParsers = {
-        raw: function (data: any, config: any) {
-            return `<code>${data.html}</code>`
-        },
-    }
+    const [test, setTest] = useState<ReactNode[]>([]);
 
     useEffect(() => {
-        const parser = new edjsParser(undefined, customParsers);
-        const markup = parser.parse(content);
-
-        const par = new DOMParser();
-        const DOM = par.parseFromString(markup, "text/html");
-        const extractedDoms = traverseDom(DOM);
-        setParsedContent(extractedDoms || []);
-
+        setTest(customRender(content.blocks));
     }, [content]);
 
     if (!content || !content.blocks) return null;
 
     return (
-        <div className="space-y-2 flex flex-col items-center justify-center  px-4">
-            {parsedContent.map((dom, index) => (
-                <div key={index}>
-                    <Markdown content={dom || ""} />
-                </div>
-            ))}
-        </div>
+        <>
+            <Card className=" bg-white w-full dark:text-black space-y-2 flex flex-col items-center justify-center px-4">
+                <CardContent className="p-4 w-full max-w-3xl">
+                    {test.map((dom, index) => (
+                        <div key={index} className="p-1.5">
+                            {dom}
+                        </div>
+                    ))}
+
+                </CardContent>
+            </Card>
+        </>
     )
 };
 

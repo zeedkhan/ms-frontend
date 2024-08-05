@@ -43,3 +43,17 @@ declare module "@editorjs/code" {
     export = Code;
 }
 
+declare module "@editorjs/attaches" {
+    import AttachesTool from "@editorjs/attaches";
+    export = AttachesTool;
+}
+
+declare module "editorjs-audio-player" {
+    import AudioPlayer from "editorjs-audio-player";
+    export = AudioPlayer;
+}
+
+declare module "editorjs-mermaid" {
+    import MermaidTool from "editorjs-mermaid";
+    export = MermaidTool;
+}

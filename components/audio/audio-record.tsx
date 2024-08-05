@@ -153,6 +153,7 @@ export const AudioRecorderWithVisualizer = ({ className }: Props) => {
 
                     if (response.error) {
                         toast.error(response.error);
+                        console.error(response);
                     }
 
                     if (response.storePath) {
