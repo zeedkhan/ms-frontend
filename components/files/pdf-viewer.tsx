@@ -29,7 +29,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ url, viewerConfig }) => {
         }
     }, [url, viewerConfig]);
 
-    return <div id="adobe-dc-view" ref={divRef} ></div>;
+    return <div id="adobe-dc-view" className="" ref={divRef} ></div>;
 };
 
 export default PDFViewer;

@@ -15,7 +15,7 @@ const options = {
 
 const Pdf = ({ url }: { url: string }) => {
     return (
-        <div className="md:h-[calc(100vh-200px)] min-h-[calc(100vh-112px)]">
+        <div className="md:h-[calc(100vh-112px)] h-[calc(100vh-56px)]">
             <Script src="https://documentcloud.adobe.com/view-sdk/main.js"></Script>
             <PDFViewer
                 url={getFile(url, "")}

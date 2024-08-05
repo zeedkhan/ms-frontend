@@ -7,6 +7,8 @@ import { uploadImage } from '@/db/upload';
 import { toast } from 'sonner';
 import { useSession } from 'next-auth/react';
 import { uploadFileToStorage } from '@/db/user';
+import { AiSVGLoader } from '../audio/ai-loader';
+import { useRouter } from 'next/navigation';
 
 const dataURLtoFile = (dataURL: string, filename: string): File => {
     const [header, data] = dataURL.split(',');
@@ -24,6 +26,7 @@ const CombinedCapture: React.FC = () => {
     const captureRef = useRef<HTMLElement | null>(null);
     const [open, setOpen] = useState(false);
     const session = useSession();
+    const router = useRouter();
 
     useEffect(() => {
         const mutationObserver = new MutationObserver((mutations) => {
@@ -126,8 +129,19 @@ const CombinedCapture: React.FC = () => {
             <CommandList>
                 <CommandEmpty>No results found.</CommandEmpty>
                 <CommandGroup heading="Suggestions">
-                    <CommandItem onSelect={captureScreen}>Screen capture</CommandItem>
-                    <CommandItem onSelect={captureViewport}>Capture viewport</CommandItem>
+                    <CommandItem
+                        onSelect={() => {
+                            router.push("/mic");
+                            setOpen(false);
+                        }}
+                        className='cursor-pointer flex space-x-4 items-center justify-center'>
+                        <div className="palette-2 w-fit h-fit scale-150 translate-x-1/2 translate-y-1/2">
+                            <AiSVGLoader className='w-8 h-8 scale-150 ' />
+                        </div>
+                        <p className='font-semibold'>Talk with AI</p>
+                    </CommandItem>
+                    <CommandItem className='cursor-pointer' onSelect={captureScreen}>Screen capture</CommandItem>
+                    <CommandItem className='cursor-pointer' onSelect={captureViewport}>Capture viewport</CommandItem>
                 </CommandGroup>
             </CommandList>
         </CommandDialog>
