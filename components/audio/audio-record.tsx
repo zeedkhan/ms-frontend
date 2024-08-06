@@ -146,14 +146,14 @@ export const AudioRecorderWithVisualizer = ({ className }: Props) => {
                     });
 
                     const response = await uploadFile(new File([recordBlob], `mic/test.wav`), "conversation");
-                    console.log(response);
+                    // console.log(response);
                     if (response.error) {
-                        toast.error(<div className='dark:text-white'>{JSON.stringify(response.error)}</div>);
+                        toast.error(<div className='dark:text-white'>{JSON.stringify(response)}</div>);
                         console.error(response);
                     }
 
                     if (response.storePath) {
-                        toast.success(<div className='dark:text-white'>{JSON.stringify(response.success)}</div>);
+                        toast.success(<div className='dark:text-white'>{JSON.stringify(response)}</div>);
                         console.log(response.success);
                         await testSpeech(response.storePath);
                     }
@@ -233,13 +233,17 @@ export const AudioRecorderWithVisualizer = ({ className }: Props) => {
 
         speechRef.current.onended = () => {
             console.log("Ending playing AI voice....");
+            toast.info("Your turn to speak...")
             setProcessing(false);
         };
 
         speechRef.current.oncanplaythrough = () => {
             console.log("Audio is fully buffered and can play through....");
             if (speechRef.current) {
-                speechRef.current.play().catch((err) => console.error("Error playing audio:", err));
+                speechRef.current.play().then(() => toast.info("AI speaking...")).catch((err) => {
+                    toast.error("Sorry but, my voice is broken")
+                    console.error("Error playing audio:", err)
+                });
             }
             setProcessing(true);
         };

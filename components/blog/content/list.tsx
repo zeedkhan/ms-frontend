@@ -1,5 +1,6 @@
 import { OutputBlockData } from "@editorjs/editorjs";
 import { ListProps } from "./types";
+import Markdown from "@/components/editor/markdown";
 
 type ListCompoenentProps = {
     block: OutputBlockData<string, ListProps>;
@@ -10,7 +11,7 @@ export default function List({ block }: ListCompoenentProps) {
     return (
         <ul className="list-disc pl-4 pt-2">
             {items.map((item, index) => (
-                <li key={index}>{item}</li>
+                <li key={index}><Markdown content={item} /></li>
             ))}
         </ul>
     )

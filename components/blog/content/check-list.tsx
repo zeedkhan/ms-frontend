@@ -1,6 +1,7 @@
 import { OutputBlockData } from "@editorjs/editorjs";
 import { CheckListProps } from "./types";
 import { Checkbox } from "@/components/ui/checkbox";
+import Markdown from "@/components/editor/markdown";
 
 type CheckListPropsComponent = {
     block: OutputBlockData<string, CheckListProps>;
@@ -13,7 +14,7 @@ export default function CheckList({ block }: CheckListPropsComponent) {
             {items.map((item, index) => (
                 <div key={index} className="flex flex-row items-center space-x-3">
                     <Checkbox checked={item.checked} onChange={() => { }} className="dark:bg-white" />
-                    <p>{item.text}</p>
+                    <Markdown content={item.text} />
                 </div>
             ))}
         </div>
