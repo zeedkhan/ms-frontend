@@ -57,24 +57,23 @@ const VoiceAI = () => {
             const isFirefox = navigator.userAgent.includes("Firefox");
             if (isFirefox) pause();
         },
-        workletURL: "/vad.worklet.bundle.min.js",
-        modelURL: "/silero_vad.onnx",
+        workletURL: "/_next/static/chunks/vad.worklet.bundle.min.js",
+        modelURL: "/_next/static/chunks/silero_vad.onnx",
         positiveSpeechThreshold: 0.6,
         minSpeechFrames: 4,
         ortConfig(ort) {
             const isSafari = /^((?!chrome|android).)*safari/i.test(
                 navigator.userAgent
             );
-            ort.env.wasm = {
-                wasmPaths: {
-                    "ort-wasm-simd-threaded.wasm":
-                        "/ort-wasm-simd-threaded.wasm",
-                    "ort-wasm-simd.wasm": "/ort-wasm-simd.wasm",
-                    "ort-wasm.wasm": "/ort-wasm.wasm",
-                    "ort-wasm-threaded.wasm": "/ort-wasm-threaded.wasm",
-                },
-                numThreads: isSafari ? 1 : 4,
-            };
+            ort.env.wasm.wasmPaths = "/_next/static/chunks/";
+            // ort.env.wasm.numThreads = isSafari ? 1 : 4;
+            ort.env.wasm.numThreads = isSafari ? 1 : 4;
+        },
+        modelFetcher: (path) => {
+            const filename = path.split("/").pop();
+            return fetch(`/_next/static/chunks/${filename}`).then((model) =>
+                model.arrayBuffer()
+            );
         },
     });
 

@@ -7,6 +7,7 @@ import {
     SheetHeader,
     SheetContent,
     SheetTrigger,
+    SheetTitle,
 } from "@/components/ui/sheet";
 import { Menu } from "../sidebar/menu";
 
@@ -20,6 +21,7 @@ export function SheetMenu() {
             </SheetTrigger>
             <SheetContent className="sm:w-72 px-3 h-full flex flex-col" side="left">
                 <SheetHeader>
+                    <SheetTitle hidden></SheetTitle>
                     <Button
                         className="flex justify-center items-center pb-2 pt-1"
                         variant="link"
