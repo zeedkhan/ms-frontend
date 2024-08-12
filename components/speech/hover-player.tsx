@@ -4,14 +4,17 @@ import { isPointInsideElement, useHoveredParagraphCoordinate } from "@/hooks/use
 import { killSpeech, speech } from "@/lib/play";
 import { useEffect, useRef, useState } from "react";
 import { getTopLevelReadableElementsOnPage } from "@/lib/parser";
-import PauseIcon from "../icon/pause-icon";
-import PlayIcon from "../icon/play-icon";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import { cn } from "@/lib/utils";
 import { AudioLines, Eraser } from 'lucide-react';
-import AISpeechBox from "./ai-speech-box";
+import dynamic from "next/dynamic";
+
+
+const Play = dynamic(() => import("../icon/play-icon"), { ssr: false });
+const Pause = dynamic(() => import("../icon/pause-icon"), { ssr: false });
+
 
 export default function HoverPlayer() {
     const [allElements, setAllElments] = useState<HTMLElement[]>([]);
@@ -150,7 +153,7 @@ export default function HoverPlayer() {
                         }}
                     >
                         {isPlaying ? (
-                            <PauseIcon
+                            <Pause
                                 className="h-6 w-6"
                                 hasGradient
                                 stops={[
@@ -160,7 +163,7 @@ export default function HoverPlayer() {
                                 ]}
                             />
                         ) : (
-                            <PlayIcon
+                            <Play
                                 className="h-6 w-6"
                                 hasGradient
                                 stops={[
