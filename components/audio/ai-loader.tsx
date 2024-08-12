@@ -1,7 +1,8 @@
+"use client";
+
 import "./loader.css";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-
 
 export const AiSVGLoader = ({ className }: { className: string }) => {
     return (

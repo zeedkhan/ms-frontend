@@ -1,14 +1,8 @@
-import { AudioRecorderWithVisualizer } from "@/components/audio/audio-record";
-import { Metadata } from "next";
-
-export const metadata: Metadata = {
-    title: "Development - Mic",
-};
+import VoiceAI from "@/components/audio/vad";
 
 export default function Page() {
+
     return (
-        <div>
-            <AudioRecorderWithVisualizer />
-        </div>
+        <VoiceAI />
     )
 }

@@ -53,4 +53,25 @@ const uploadFile = async (
     }
 };
 
-export { uploadImage, uploadFile };
+const sendFile = async (
+    file: File,
+): Promise<ResponseUpload> => {
+    try {
+        const formData = new FormData();
+        formData.append("file", file);
+        const res = await axios.post(UPLOAD_ROUTES.uploadTranscriptMemory, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        });
+        return res.data;
+    } catch (err) {
+        console.error(err);
+        return {
+            error: "Error uploading file"
+        }
+    }
+};
+
+
+export { uploadImage, uploadFile, sendFile };
