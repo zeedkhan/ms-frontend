@@ -59,6 +59,11 @@ export function SocketProvider({
                 console.log("connected", socket.id);
                 setIsConnected(true);
             });
+
+            socket.on("sendEvent", (data: any) => {
+                toast.info(<>{JSON.stringify(data)}</>);
+            })
+
             socket.on("disconnect", () => {
                 console.log("disconnected", socket.id);
                 setIsConnected(false);
@@ -81,11 +86,11 @@ export function SocketProvider({
 
             socket.on("error", handleError);
 
-
             return () => {
                 socket.off("sendNotification");
                 socket.off("connect");
                 socket.off("disconnect");
+                socket.off("sendEvent");
                 socket.off("error", handleError);
             }
         }

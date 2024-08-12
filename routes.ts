@@ -54,6 +54,7 @@ export const UPLOAD_ROUTES = {
   getFileId: process.env.NEXT_PUBLIC_GATEWAY + "/user/storage/file",
   editUserAvatar: process.env.NEXT_PUBLIC_GATEWAY + "/user/avatar",
   uploadTranscript: process.env.NEXT_PUBLIC_UPLOAD + "/transcription",
+  uploadTranscriptMemory: process.env.NEXT_PUBLIC_UPLOAD + "/transcription/transcribe",
 }
 
 export const BLOG_ROUTES = {
