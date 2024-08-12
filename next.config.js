@@ -10,12 +10,16 @@ const nextConfig = {
                 source: "/(.*)",
                 headers: [
                     {
-                        key: "Cross-Origin-Opener-Policy",
-                        value: "same-origin",
+                        key: 'Cross-Origin-Embedder-Policy',
+                        value: 'require-corp' // or 'credentialless' depending on your needs
                     },
                     {
-                        key: "Cross-Origin-Embedder-Policy",
-                        value: "require-corp",
+                        key: 'Cross-Origin-Opener-Policy',
+                        value: 'same-origin'
+                    },
+                    {
+                        key: 'Cross-Origin-Resource-Policy',
+                        value: 'cross-origin'
                     },
                 ],
             },
