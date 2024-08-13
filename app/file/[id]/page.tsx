@@ -1,7 +1,8 @@
 import { auth } from "@/auth";
+import HTML from "@/components/files/html-viewer";
 import Pdf from "@/components/files/pdf";
 import { getFileId } from "@/db/user";
-import { isPDF } from "@/lib/utils";
+import { isHTML, isPDF } from "@/lib/utils";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -31,6 +32,11 @@ export default async function FilePage(
             </div>
         )
     };
+
+
+    if (file.successs && isHTML(file.successs.url)) {
+        return <HTML file={file.successs} />
+    }
 
 
     if (file.successs && isPDF(file.successs.url)) {

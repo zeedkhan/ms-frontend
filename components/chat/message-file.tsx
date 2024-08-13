@@ -1,16 +1,17 @@
-import { getFile, isImage, isVideo } from "@/lib/utils";
+import { getFile, isHTML, isImage, isPDF, isVideo } from "@/lib/utils";
 import { Message } from "@/types";
 import { Package } from "lucide-react";
+import HTML from "../files/html";
 
 const Video = ({ file }: { file: any }) => {
     return (
         <video
-            src={getFile(file, "")}
+            src={getFile(file.url, "")}
             controls
             className="max-w-80"
         />
     );
-}
+};
 
 const OtherFile = ({ file }: { file: any }) => {
     return (
@@ -41,6 +42,17 @@ export const File = ({ file }: { file: any }) => {
     if (isImage(file.url)) {
         return <img src={getFile(file.url, "")} alt={file.name} className="max-w-80 max-h-80" />
     }
+
+    if (isPDF(file.url)) {
+        return (
+            <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/PDF_file_icon.svg" className="w-full h-full" alt="PDF" />
+        )
+    }
+
+    if (isHTML(file.url)) {
+        return <HTML file={file} />
+    }
+
 
     return <OtherFile file={file} />
 }

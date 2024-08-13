@@ -15,6 +15,12 @@ import { uploadFile } from "@/db/upload";
 import { uploadFileToStorage } from "@/db/user";
 import { useSession } from "next-auth/react";
 import { EnhanceButton } from "../ui/enhance-button";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+
 
 type StorageItemsProps = {
     items: StorageFile[];
@@ -58,15 +64,20 @@ const StorageItems: React.FC<StorageItemsProps> = ({ items }) => {
                     url: response.storePath,
                     userId: session.data?.user.id as string,
                     name: file?.name || "",
-                    size: file?.size || 0,
+                    size: file?.size || 1,
                 });
+                if (addStoratePath.error) {
+                    toast.error('Error uploading');
+                    console.error('Error uploading:', addStoratePath.error);
+                    return;
+                }
                 toast.success('Capture successfully uploaded.');
             } else {
-                toast.error('Error uploading capture.');
+                toast.error('Error uploading.');
                 console.error('Error uploading:', response);
             }
         } catch (error) {
-            toast.error('Error uploading capture.');
+            toast.error('Error uploading');
             console.error('Error uploading:', error);
         }
     }
@@ -187,12 +198,29 @@ const StorageItems: React.FC<StorageItemsProps> = ({ items }) => {
                 </AnimatePresence>
             </motion.div>
 
-            <div className="fixed md:bottom-20 md:right-20 bottom-10 right-10 z-50 ">
-                <div className="animate-bounce hover:animate-none shadow-xl rounded-full p-1 border-2 cursor-pointer text-red-600 dark:bg-white">
-                    <input type="file" ref={inputRef} hidden onChange={onFileChange} />
-                    <CircleFadingPlus size={32} onClick={handleClick} />
-                </div>
-            </div>
+            <Popover>
+                <PopoverTrigger asChild className="fixed md:bottom-20 md:right-20 bottom-10 right-10 z-50">
+                    <div className="shadow-xl rounded-full p-0.5 border-2 cursor-pointer border-black dark:border-white">
+                        <input type="file" ref={inputRef} hidden onChange={onFileChange} />
+                        <EnhanceButton
+                            className="rounded-full"
+                            variant="expandIcon"
+                            Icon={CircleFadingPlus}
+                            iconPlacement="right"
+                        >
+                            Upload
+                        </EnhanceButton>
+                    </div>
+                </PopoverTrigger>
+                <PopoverContent className="w-fit rounded-xl">
+                    <div className="flex flex-col space-y-4">
+                        <div className="cursor-pointer flex items-center justify-start space-x-4 transition scale-100 duration-100 hover:scale-105" onClick={handleClick}>
+                            <CircleFadingPlus size={24} />
+                            <p>Local file</p>
+                        </div>
+                    </div>
+                </PopoverContent>
+            </Popover>
 
         </div>
     );
