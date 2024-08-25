@@ -1,8 +1,6 @@
 import { auth } from "@/auth";
 import Content from "./content";
 import { getUser } from "@/db/user";
-import ContentWrapper from "./content-wrapper";
-
 
 const getUserData = async (userId: string) => {
     try {
@@ -31,9 +29,7 @@ const AccountWrapper = async () => {
     }
 
     return (
-        <ContentWrapper>
-            <Content session={session} userData={userData} />
-        </ContentWrapper>
+        <Content session={session} userData={userData} />
     );
 }
 

@@ -6,9 +6,9 @@ import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, C
 import { uploadImage } from '@/db/upload';
 import { toast } from 'sonner';
 import { useSession } from 'next-auth/react';
-import { uploadFileToStorage } from '@/db/user';
 import { AiSVGLoader } from '../audio/ai-loader';
-import { useRouter } from 'next/navigation';
+import { uploadFileToStorage } from '@/db/storage';
+import { useRouter } from '../loader/use-router';
 
 const dataURLtoFile = (dataURL: string, filename: string): File => {
     const [header, data] = dataURL.split(',');
@@ -22,7 +22,7 @@ const dataURLtoFile = (dataURL: string, filename: string): File => {
     return new File([arrayBuffer], filename, { type: mime });
 };
 
-const CombinedCapture: React.FC = () => {
+const AppNavigate: React.FC = () => {
     const captureRef = useRef<HTMLElement | null>(null);
     const [open, setOpen] = useState(false);
     const session = useSession();
@@ -140,12 +140,20 @@ const CombinedCapture: React.FC = () => {
                         </div>
                         <p className='font-semibold'>Talk with AI</p>
                     </CommandItem>
+
+                    <CommandItem className='cursor-pointer' onSelect={() => router.push("/background-removal")}>Background Removal</CommandItem>
+                    <CommandItem className='cursor-pointer' onSelect={() => router.push("/blog/e")}>Blogs</CommandItem>
+                </CommandGroup>
+                <CommandGroup heading="Capture">
                     <CommandItem className='cursor-pointer' onSelect={captureScreen}>Screen capture</CommandItem>
                     <CommandItem className='cursor-pointer' onSelect={captureViewport}>Capture viewport</CommandItem>
+                </CommandGroup>
+                <CommandGroup heading="Storage">
+                    <CommandItem className='cursor-pointer' onSelect={() => router.push("/storage")}>Storage</CommandItem>
                 </CommandGroup>
             </CommandList>
         </CommandDialog>
     );
 };
 
-export default CombinedCapture;
+export default AppNavigate;

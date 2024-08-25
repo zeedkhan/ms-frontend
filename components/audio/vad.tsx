@@ -5,7 +5,6 @@ import { Button } from "../ui/button";
 import { useMicVAD, utils } from "@ricky0123/vad-react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from 'uuid';
-import axios from "axios";
 import { UPLOAD_ROUTES } from "@/routes";
 import AiLoader from "./ai-loader";
 import {
@@ -19,12 +18,11 @@ import {
 } from "@/components/ui/select"
 import { useSocket } from "../providers/socket-provider";
 
-
-type LLMoptions = "assistant" | "completion";
-
+type LLMoptions = "assistant" | "completion" | "conversation";
 const selectLLMOptions: { value: LLMoptions, label: string }[] = [
     { value: "assistant", label: "Assistant" },
-    { value: "completion", label: "Completion" }
+    { value: "completion", label: "Completion" },
+    { value: "conversation", label: "Conversation" }
 ]
 
 const VoiceAI = () => {
@@ -42,7 +40,7 @@ const VoiceAI = () => {
     const [AIprocessing, setAIprocessing] = useState(false);
     const [threadId, setThreadId] = useState<string | null>(null);
 
-    const { start, pause, userSpeaking } = useMicVAD({
+    const { start, pause, userSpeaking, loading } = useMicVAD({
         startOnLoad: false,
         onSpeechStart: () => {
             console.log("start")
@@ -67,13 +65,11 @@ const VoiceAI = () => {
             );
             ort.env.wasm.wasmPaths = "/_next/static/chunks/";
             // ort.env.wasm.numThreads = isSafari ? 1 : 4;
-            ort.env.wasm.numThreads = isSafari ? 1 : 4;
+            ort.env.wasm.numThreads = 1;
         },
-        modelFetcher: (path) => {
+        modelFetcher: async (path) => {
             const filename = path.split("/").pop();
-            return fetch(`/_next/static/chunks/${filename}`).then((model) =>
-                model.arrayBuffer()
-            );
+            return await fetch(`/_next/static/chunks/${filename}`).then((model) => model.arrayBuffer());
         },
     });
 
@@ -90,57 +86,59 @@ const VoiceAI = () => {
             form.append("file", blob, `${uuidv4()}.wav`);
             form.append("messages", JSON.stringify(currentMessage));
 
-            /*
-                Voice Assistant ID - Hard Code! 
-            */
+
             const thread = threadId ? `&threadId=${threadId}` : "";
             const query = `?llm=${llmType}` + (llmType === "assistant" ? `&assistantId=asst_pZwbRfwsxTOjfdBNr7NwD1rC` + thread : "");
 
+            form.append("query", query);
+
             console.time("starting process");
-            const res = axios.post(UPLOAD_ROUTES.uploadTranscriptMemory + query, form, {
+            fetch("/api/ai", {
+                method: "POST",
                 headers: {
-                    "Content-Type": "multipart/form-data",
                     "x-socket-id": socket.id,
-                }
-            }).then((response) => {
-                if (response.data.threadId) {
-                    setThreadId(response.data.threadId);
-                }
-                setCurrentMessage((prev) => [
-                    ...prev,
-                    { role: "user", content: response.data.humanTranscription },
-                    { role: "assistant", content: response.data.assistantTranscription },
-                ]);
+                },
+                body: form
+            })
+                .then((res) => res.json())
+                .then(({ response }) => {
+                    if (response.threadId) {
+                        setThreadId(response.threadId);
+                    }
+                    setCurrentMessage((prev) => [
+                        ...prev,
+                        { role: "user", content: response.humanTranscription },
+                        { role: "assistant", content: response.assistantTranscription },
+                    ]);
 
-                const playbackURL = `${UPLOAD_ROUTES.uploadTranscript}/generate-audio?text=${encodeURIComponent(response.data.assistantTranscription)}`;
+                    const playbackURL = `${UPLOAD_ROUTES.uploadTranscript}/generate-audio?text=${encodeURIComponent(response.assistantTranscription)}`;
 
-                console.timeEnd("starting process");
+                    console.timeEnd("starting process");
+                    const request = fetch(playbackURL).then((res) => {
+                        if (!speechRef.current) return;
+                        speechRef.current.src = playbackURL;
 
-                const request = fetch(playbackURL).then((res) => {
-                    if (!speechRef.current) return;
-                    speechRef.current.src = playbackURL;
+                        speechRef.current.onended = () => {
+                            console.log("Ending playing AI voice....");
+                            toast.info("Your turn to speak...");
+                            setAIprocessing(false);
+                            start();
+                        };
 
-                    speechRef.current.onended = () => {
-                        console.log("Ending playing AI voice....");
-                        toast.info("Your turn to speak...");
-                        setAIprocessing(false);
-                        start();
-                    };
-
-                    speechRef.current.oncanplaythrough = () => {
-                        console.log("Audio is fully buffered and can play through....");
-                        if (speechRef.current) {
-                            speechRef.current.play().then(() => toast.info("AI speaking...")).catch((err) => {
-                                toast.error("Sorry but, my voice is broken")
-                                console.error("Error playing audio:", err)
-                            });
-                        }
-                    };
+                        speechRef.current.oncanplaythrough = () => {
+                            console.log("Audio is fully buffered and can play through....");
+                            if (speechRef.current) {
+                                speechRef.current.play().then(() => toast.info("AI speaking...")).catch((err) => {
+                                    toast.error("Sorry but, my voice is broken")
+                                    console.error("Error playing audio:", err)
+                                });
+                            }
+                        };
+                    });
+                }).catch((error) => {
+                    toast.error(<div className='dark:text-white'>{JSON.stringify(error)}</div>);
+                    console.error(error);
                 });
-            }).catch((error) => {
-                toast.error(<div className='dark:text-white'>{JSON.stringify(error)}</div>);
-                console.error(error);
-            });
 
             setCurrentRecord(null);
         }
@@ -187,6 +185,7 @@ const VoiceAI = () => {
             </Select>
 
             <Button
+                disabled={loading}
                 onClick={() => setStartConversation(!startConversation)}
             >
                 {startConversation ? "pause conversation" : "start conversation"}

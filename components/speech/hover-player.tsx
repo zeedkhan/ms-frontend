@@ -10,6 +10,8 @@ import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import { cn } from "@/lib/utils";
 import { AudioLines, Eraser } from 'lucide-react';
 import dynamic from "next/dynamic";
+import { useStore } from "zustand";
+import { usePlayerSpeechToggle } from "@/hooks/use-player-toggle";
 
 
 const Play = dynamic(() => import("../icon/play-icon"), { ssr: false });
@@ -27,6 +29,8 @@ export default function HoverPlayer() {
     const [showTools, setShowTools] = useState(false);
 
     const [playText, setPlayText] = useState<string | null>(null);
+
+    const speechOn = useStore(usePlayerSpeechToggle, (state) => state.on);
 
     useEffect(() => {
         if (hoverElement && hoverElement.element === playingElement.current && playRef && speechSynthesis.speaking && !speechSynthesis.paused) {
@@ -124,7 +128,10 @@ export default function HoverPlayer() {
         return () => {
             window.removeEventListener("click", handleClick)
         }
-    }, [hoverElement])
+    }, [hoverElement]);
+
+
+    if (!speechOn) return null;
 
     return (
         <>

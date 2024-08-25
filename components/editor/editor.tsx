@@ -36,7 +36,6 @@ interface EditorProps {
     blogId: string | null;
 }
 
-
 const Editor: React.FC<EditorProps> = ({ data, holder, onChange, userId, blogId }) => {
     const EDITOR_TOOLS = {
         embed: Embed,

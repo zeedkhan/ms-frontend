@@ -1,5 +1,5 @@
 import { CHAT_ROUTES } from "@/routes"
-import { createChatRoomSchema, UpdateAvatar } from "@/schemas"
+import { CreateChatRoomSchema, UpdateAvatar } from "@/schemas"
 import { AtLeast, Room } from "@/types"
 // import { Blog } from "@/types"
 import axios from "axios"
@@ -27,7 +27,7 @@ export const getChatRoom = async (roomId: string): Promise<Room | null> => {
 }
 
 export const createChatRoom = async (userIds: string[], roomName: string): Promise<Room | null> => {
-    const validatedFields = createChatRoomSchema.safeParse({ userIds, name: roomName });
+    const validatedFields = CreateChatRoomSchema.safeParse({ userIds, name: roomName });
     if (!validatedFields.success) {
         console.log(validatedFields.error.message)
         console.error(validatedFields.error);

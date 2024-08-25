@@ -6,9 +6,10 @@ import HTML from "../files/html";
 const Video = ({ file }: { file: any }) => {
     return (
         <video
+            autoPlay={false}
             src={getFile(file.url, "")}
             controls
-            className="max-w-80"
+            className="max-w-80 w-full h-full object-cover"
         />
     );
 };

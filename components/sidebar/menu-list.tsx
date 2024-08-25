@@ -8,7 +8,9 @@ import {
     LucideIcon,
     StickyNote,
     DatabaseZap,
-    MessageSquareText
+    MessageSquareText,
+    ImageMinus,
+    ShipWheel
 } from "lucide-react";
 
 type Submenu = {
@@ -17,7 +19,7 @@ type Submenu = {
     active: boolean;
 };
 
-type Menu = {
+export type Menu = {
     href: string;
     label: string;
     active: boolean;
@@ -33,7 +35,7 @@ type Group = {
 export function getMenuList(pathname: string): Group[] {
     return [
         {
-            groupLabel: "",
+            groupLabel: "Dashboard",
             menus: [
                 {
                     href: "/dashboard",
@@ -56,7 +58,7 @@ export function getMenuList(pathname: string): Group[] {
                 },
                 {
                     href: "/blog/e",
-                    label: "blog",
+                    label: "Blog",
                     active: pathname.includes("/blog"),
                     icon: StickyNote,
                     submenus: []
@@ -67,19 +69,33 @@ export function getMenuList(pathname: string): Group[] {
                     active: pathname.includes("/storage"),
                     icon: DatabaseZap,
                     submenus: []
-                }
+                },
+                {
+                    href: "/crawler",
+                    label: "Crawler",
+                    active: pathname.includes("/crawler"),
+                    icon: ShipWheel,
+                    submenus: [] 
+                },
+                {
+                    href: "/background-removal",
+                    label: "Remove Background",
+                    active: pathname.includes("/background-removal"),
+                    icon: ImageMinus,
+                    submenus: []
+                },
             ]
         },
         {
             groupLabel: "Settings",
             menus: [
                 {
-                    href: "/account",
+                    href: "/setting",
                     label: "Account",
-                    active: pathname.includes("/account"),
+                    active: pathname.includes("/setting"),
                     icon: Settings,
                     submenus: []
-                }
+                },
             ]
         }
     ];

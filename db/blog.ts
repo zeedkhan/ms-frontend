@@ -5,6 +5,7 @@ import axios from "axios"
 type Response = {
     success?: string;
     error?: string
+    data?: any
 }
 
 const getBlogPath = async (seoPath: string): Promise<Blog | null> => {
@@ -61,7 +62,8 @@ const createBlog = async (payload: Blog): Promise<Response> => {
             }
         }
         return {
-            success: "Created!"
+            success: "Created!",
+            data: request.data
         }
     } catch (err) {
         console.error(err)
@@ -96,6 +98,8 @@ const updateBlog = async (payload: Blog): Promise<Response> => {
 const deleteBlog = async (id: string): Promise<Response> => {
     try {
         const request = await axios.delete(`${BLOG_ROUTES.blog}/${id}`);
+        
+        console.log("request", request)
         return {
             success: "Deleted!"
         }

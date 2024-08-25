@@ -2,15 +2,18 @@
 
 import { useState, useEffect } from "react";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
-// import "react-quill/dist/quill.snow.css";
-// import ReactQuill from 'react-quill';
 import "@cyntler/react-doc-viewer/dist/index.css";
 import { getFile } from "@/lib/utils";
 import MonacoEditor from "@monaco-editor/react";
 import { EnhanceButton } from "../ui/enhance-button";
+import { encode } from 'js-base64';
+import { Switch } from "../ui/switch";
+import { Label } from "../ui/label";
 
 const HTML = ({ file }: { file: any }) => {
-    const [htmlContent, setHtmlContent] = useState("");
+    const [content, setContent] = useState("");
+    const [defaultContent, setDefaultContent] = useState("");
+    const [autoSave, setAutoSave] = useState(false);
 
     useEffect(() => {
         fetch(getFile(file.url, ""))
@@ -18,37 +21,55 @@ const HTML = ({ file }: { file: any }) => {
                 return response.text()
             })
             .then(data => {
-                setHtmlContent(data);
+                setContent(data);
+                setDefaultContent(data);
             });
     }, [file.url]);
 
-    const handleEditorChange = (content: string) => {
-        setHtmlContent(content);
-    };
+    useEffect(() => {
+        let time: NodeJS.Timeout;
+        if (!autoSave) return;
+        time = setTimeout(() => {
+            setDefaultContent(content);
+        }, 1500);
+        return () => {
+            console.log("clear")
+            clearTimeout(time)
+        };
+    }, [content, autoSave]);
 
     const docs = [
-        { uri: "data:text/html;base64," + btoa(htmlContent) },
+        { uri: "data:text/html;base64," + encode(defaultContent) },
     ];
-
     return (
-        <div className="h-full">
-            <EnhanceButton onClick={() => console.log(htmlContent)}>
-                Click me
-            </EnhanceButton>
-
+        <div className="h-full flex flex-col space-y-4">
             <DocViewer
                 className="min-h-[50vh]"
                 documents={docs}
                 pluginRenderers={DocViewerRenderers}
             />
+            <div
+                className="flex justify-end"
+            >
+                <div className="flex items-center space-x-2 mr-4">
+                    <Switch id="auto-save" checked={autoSave} onCheckedChange={setAutoSave} className="data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-red-500" />
+                    <Label htmlFor="auto-save">Auto Save</Label>
+                </div>
 
+                <EnhanceButton
+                    size={"sm"}
+                    className="mr-4"
+                    onClick={() => console.log(content)}>
+                    Save
+                </EnhanceButton>
+            </div>
             <MonacoEditor
-                className="min-h-[50vh]"
+                className="min-h-[50vh] border-dashed rounded"
                 language="html"
-                value={htmlContent}
-                onChange={(value) => handleEditorChange(value as string)}
+                value={defaultContent}
+                onChange={(value) => setContent(value as string)}
                 options={{
-                    theme: "vs-dark",
+                    theme: "light",
                     automaticLayout: true,
                 }}
             />

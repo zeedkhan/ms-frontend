@@ -2,9 +2,11 @@
 
 import { createBlog, updateBlog } from "@/db/blog";
 import { OutputData } from "@editorjs/editorjs";
-import { Button } from "../ui/button";
 import { toast } from "sonner"
 import { blogSchema } from "@/schemas";
+import { useRouter } from "../loader/use-router";
+import { EnhanceButton } from "../ui/enhance-button";
+import { CirclePlus } from "lucide-react";
 
 type SaveBlogProps = {
     payload: SaveData
@@ -23,6 +25,8 @@ type SaveData = {
 }
 
 const SaveBlog: React.FC<SaveBlogProps> = ({ payload, blogId, disabled, ...res }) => {
+
+    const router = useRouter();
 
     const create = async ({ seoPath, title, userId, version = 1, content, description = "" }: SaveData) => {
         // save in database
@@ -56,6 +60,7 @@ const SaveBlog: React.FC<SaveBlogProps> = ({ payload, blogId, disabled, ...res }
             }
             if (blog.success) {
                 toast.success("Blog created!");
+                return blog;
             }
         } catch (err) {
             toast.error(JSON.stringify(err))
@@ -99,11 +104,13 @@ const SaveBlog: React.FC<SaveBlogProps> = ({ payload, blogId, disabled, ...res }
             // return success or error with toast63.
             try {
                 if (!blogId) {
-                    console.log("Create")
-                    return await create(payload)
+                    const createBlog = await create(payload)
+                    if (createBlog?.data) {
+                        console.log(createBlog.data)
+                        router.push(`/blog/e/${createBlog.data.blog.id}`);
+                    }
+                    return;
                 }
-                console.log("Edit")
-
                 const editBlog = await edit({
                     ...payload,
                     id: blogId,
@@ -122,12 +129,16 @@ const SaveBlog: React.FC<SaveBlogProps> = ({ payload, blogId, disabled, ...res }
 
 
     return (
-        <Button
+        <EnhanceButton
+            variant={"outlineExpandIcon"}
+            iconPlacement="left"
+            Icon={CirclePlus}
+            size={"sm"}
             disabled={disabled}
-            className="w-fit min-w-20" onClick={handleSave}
+            className="shadow rounded-full w-fit min-w-20" onClick={handleSave}
         >
-            {!blogId ? "Save" : "Update"}
-        </Button>
+            {!blogId ? "Create" : "Update"}
+        </EnhanceButton>
     );
 }
 

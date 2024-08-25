@@ -74,7 +74,7 @@ export function useHoveredParagraphCoordinate(
     return hoveredElement;
 }
 
-const useMousePosition = () => {
+export const useMousePosition = () => {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     
     useEffect(() => {

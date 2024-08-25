@@ -135,6 +135,16 @@ export type User = {
     role: UserRole;
 }
 
+export type Directory = {
+    id: string;
+    name: string;
+    userId: string;
+    createdAt: string;
+    updatedAt: string;
+    parentId?: string;
+    children?: Directory[];
+    files?: StorageFile[];
+}
 
 export type Blog = {
     id?: string;
@@ -144,9 +154,20 @@ export type Blog = {
     userId: string;
     version: number;
     seoPath: string;
+    createdAt?: string;
+    updatedAt?: string;
+    pageViews?: number;
 }
 
 export enum UserRole {
     ADMIN = "ADMIN",
     USER = "USER",
+}
+
+export type SearchResult = {
+    name: string;
+    url: string;
+    createdAt: string;
+    updatedAt: string;
+    id: string
 }

@@ -14,6 +14,8 @@ import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { getBlogPath } from "@/db/blog";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { EnhanceButton } from "../ui/enhance-button";
+import { Eye, PenLine, Wrench } from "lucide-react";
 
 let Editor = dynamic(() => import("./editor"), {
     ssr: false,
@@ -27,9 +29,11 @@ type BlogEditor = {
 const menus = [
     {
         title: "Editor",
+        icon: PenLine
     },
     {
         title: "Settings",
+        icon: Wrench
     },
 ]
 
@@ -91,24 +95,38 @@ const NewEditor = ({ blog, blogId }: BlogEditor) => {
 
     return (
         <div>
-            <div className="px-6 w-full flex items-center space-x-4 justify-between">
+            <div className="overflow-x-auto overflow-hidden py-1 px-6 w-full flex items-center space-x-4 justify-between">
                 <div className="flex space-x-4 justify-center">
-                    {menus.map((menu, index) => (
-                        <Card
-                            onClick={() => setSelectIndex(index)}
-                            className={cn(
-                                "px-4 py-0.5 cursor-pointer",
-                                `${selectIndex === index ? "bg-green-300 dark:text-black hover:bg-green-400" : ""}`)} key={index}>
-                            <p>{menu.title}</p>
-                        </Card>
-                    ))}
 
+                    <div className="flex space-x-4 justify-center">
+                        {menus.map((menu, index) => (
+                            <EnhanceButton
+                                variant={"outline"}
+                                size={"sm"}
+                                key={index}
+                                className={cn(
+                                    `shadow rounded-full`,
+                                    selectIndex === index ? "bg-green-300 dark:text-black dark:hover:text-black dark:hover:bg-green-300" : ""
+                                )}
+                                onClick={() => setSelectIndex(index)}
+                            >
+                                <div className="flex items-center space-x-2">
+                                    <menu.icon size={18} />
+                                    <p>{menu.title}</p>
+                                </div>
+                            </EnhanceButton>
+                        ))}
+                    </div>
                 </div>
 
                 <div className="flex space-x-4">
                     {blogId && (
-                        <Button
-                            className="border bg-green-300 text-black hover:bg-green-400"
+                        <EnhanceButton
+                            variant={"outlineExpandIcon"}
+                            iconPlacement="left"
+                            Icon={Eye}
+                            size={"sm"}
+                            className="shadow rounded-full "
                         >
                             <Link
                                 href={process.env.NEXT_PUBLIC_DOMAIN + `/blog/${blog.seoPath}`}
@@ -117,7 +135,7 @@ const NewEditor = ({ blog, blogId }: BlogEditor) => {
                             >
                                 Preview
                             </Link>
-                        </Button>
+                        </EnhanceButton>
                     )}
                     <SaveBlog payload={payload} userId={session.user.id} blogId={blogId} />
                 </div>

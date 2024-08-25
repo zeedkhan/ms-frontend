@@ -48,13 +48,32 @@ export const AUTH_ROUTES = {
 };
 
 export const UPLOAD_ROUTES = {
-  stroageDomain: process.env.NEXT_PUBLIC_STORAGE,
   uploads: process.env.NEXT_PUBLIC_UPLOAD + "/upload",
+  editUserAvatar: process.env.NEXT_PUBLIC_GATEWAY + "/user/avatar",
+
+  // Move object
+  moveStorage: process.env.NEXT_PUBLIC_GATEWAY + "/user/move/storage",
+  moveDirectory: process.env.NEXT_PUBLIC_GATEWAY + "/user/move/directory",
+
+  // Storage
+  stroageDomain: process.env.NEXT_PUBLIC_STORAGE,
   userStorage: process.env.NEXT_PUBLIC_GATEWAY + "/user/storage",
   getFileId: process.env.NEXT_PUBLIC_GATEWAY + "/user/storage/file",
-  editUserAvatar: process.env.NEXT_PUBLIC_GATEWAY + "/user/avatar",
+  userStorageNoDirectory: process.env.NEXT_PUBLIC_GATEWAY + "/user/storage/no-directory",
+
+  // Directory
+  directory: process.env.NEXT_PUBLIC_GATEWAY + "/user/directory",
+  userDirectory: process.env.NEXT_PUBLIC_GATEWAY + "/user/directory/user",
+
+  // transcribe
   uploadTranscript: process.env.NEXT_PUBLIC_UPLOAD + "/transcription",
   uploadTranscriptMemory: process.env.NEXT_PUBLIC_UPLOAD + "/transcription/transcribe",
+
+  // crawler
+  crawler: process.env.NEXT_PUBLIC_UPLOAD + "/crawler",
+
+  // Search
+  searchDirectoryAndStorage: process.env.NEXT_PUBLIC_GATEWAY + "/user/search/object",
 }
 
 export const BLOG_ROUTES = {

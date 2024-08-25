@@ -6,6 +6,9 @@ import { UserNav } from "./user-nav";
 import { ModeToggle } from "./mode-toggle";
 import SocketIndecator from "./socket-indicator";
 import { useSession } from "next-auth/react";
+import { useStore } from "zustand";
+import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
+import { cn } from "@/lib/utils";
 
 interface NavbarProps {
     title: ReactNode;
@@ -13,8 +16,18 @@ interface NavbarProps {
 
 export function Navbar({ title }: NavbarProps) {
     const session = useSession();
+    const sidebar = useStore(useSidebarToggle, (state) => state);
+
+    const shouldShow = !session.data ? "ml-0" : (sidebar?.isOpen === false) ? "lg:ml-[90px]" : "lg:ml-72";
+    // h-full bg-zinc-50 dark:bg-zinc-900  
     return (
-        <header className="sticky top-0 z-10 w-full bg-background/95 shadow backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:shadow-secondary">
+        <header
+            className={cn(
+                `bg-background/95 shadow backdrop-blur`,
+                `supports-[backdrop-filter]:bg-background/60 dark:shadow-secondary`,
+                `transition-[margin-left] ease-in-out duration-300`,
+                shouldShow
+            )}>
             <div className="mx-4 sm:mx-8 flex h-14 items-center">
                 <div className="flex items-center space-x-4 lg:space-x-0">
                     <SheetMenu />

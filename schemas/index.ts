@@ -99,9 +99,20 @@ export const SettingsSchema = z.object({
 });
 
 
-export const createChatRoomSchema = z.object({
+export const CreateChatRoomSchema = z.object({
   userIds: z.array(z.string()),
   name: z.string().min(1, {
     message: "Room name is required"
   }),
+});
+
+export const MoveFilesToDirectorySchema = z.object({
+  ids: z.array(z.string()),
+  directoryId: z.string(),
+})
+
+export const CreateDirectorySchema = z.object({
+  name: z.string().min(1),
+  userId: z.string().min(1),
+  parentId: z.string().min(1).optional(),
 });
