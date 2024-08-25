@@ -13,6 +13,8 @@ const buttonVariants = cva(
                     "bg-destructive text-destructive-foreground hover:bg-destructive/90",
                 outline:
                     "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+                outlineExpandIcon:
+                    "group relative border border-input bg-background hover:bg-accent",
                 secondary:
                     "bg-secondary text-secondary-foreground hover:bg-secondary/80",
                 ghost: "hover:bg-accent hover:text-accent-foreground",
@@ -89,13 +91,13 @@ const EnhanceButton = React.forwardRef<
             >
                 {Icon && iconPlacement === "left" && (
                     <div className="w-0 translate-x-[0%] pr-0 opacity-0 transition-all duration-200 group-hover:w-5 group-hover:translate-x-100 group-hover:pr-2 group-hover:opacity-100">
-                        <Icon />
+                        <Icon  size={size === "sm" ? 18 : 24} />
                     </div>
                 )}
                 {props.children}
                 {Icon && iconPlacement === "right" && (
                     <div className="w-0 translate-x-[100%] pl-0 opacity-0 transition-all duration-200 group-hover:w-5 group-hover:translate-x-0 group-hover:pl-2 group-hover:opacity-100">
-                        <Icon />
+                        <Icon  size={size === "sm" ? 18 : 24} />
                     </div>
                 )}
             </Comp>

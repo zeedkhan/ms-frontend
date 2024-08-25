@@ -64,9 +64,9 @@ export function UserNav({ session }: { session: Session }) {
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem className="hover:cursor-pointer" asChild>
-                        <Link href="/account" className="flex items-center">
+                        <Link href="/setting" className="flex items-center">
                             <User className="w-4 h-4 mr-3 text-muted-foreground" />
-                            Account
+                            Setting
                         </Link>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>

@@ -8,8 +8,9 @@ type EmbedComponentProps = {
 
 const EmbedComponent: React.FC<EmbedComponentProps> = ({ block }) => {
     return (
-        <div>
+        <div className="w-full">
             <iframe
+                className="w-full"
                 style={{ margin: "auto" }}
                 allow="accelerometer; 
         autoplay; 
@@ -25,11 +26,11 @@ const EmbedComponent: React.FC<EmbedComponentProps> = ({ block }) => {
                 height={block.data.height}>
             </iframe>
 
-            <div className="mt-5 p-3 text-sm border-gray-200 border rounded-xl">
-                {block.data.caption && (
+            {block.data.caption && (
+                <div className="mt-5 p-3 text-sm border-gray-200 border rounded-xl">
                     <Markdown content={block.data.caption} />
-                )}
-            </div>
+                </div>
+            )}
         </div>
     )
 };

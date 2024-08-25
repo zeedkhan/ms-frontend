@@ -1,0 +1,3 @@
+export const audioFileExtensions = [".mp3", ".wav", ".aac", ".flac", ".ogg", ".m4a", ".wma", ".aiff", ".alac", ".opus", ".amr", ".pcm", ".mka", ".dsd", ".dts", ".au", ".ra", ".wv", ".tta", ".ac3"];
+export const videoFileExtensions = [".mp4", ".avi", ".mkv", ".mov", ".wmv", ".flv", ".webm", ".mpeg", ".mpg", ".3gp", ".ogv", ".h264", ".hevc", ".divx", ".xvid", ".svi", ".vob"];
+export const imageFileExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".tiff", ".psd", ".raw", ".heif", ".indd", ".ai", ".eps", ".svg"];

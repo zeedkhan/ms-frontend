@@ -1,40 +1,64 @@
-import { Card } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+"use client";
+
 import { Blog } from "@/types";
-import { FilePlus2, StickyNote } from "lucide-react";
+import { z } from "zod";
+import { blogSchema, columns, } from "./column";
+import { Card } from "@/components/ui/card";
+import { DataTable } from "@/components/ui/data-table/data-table";
+import { useStore } from "zustand";
+import { BlogStore } from "@/state/blog";
+import { useEffect, useState } from "react";
+import { EnhanceButton } from "@/components/ui/enhance-button";
 import Link from "next/link";
+import { deleteBlog } from "@/db/blog";
+import { toast } from "sonner";
 
 function Landing({ blogs }: { blogs: Blog[] }) {
+    const storeBlogs = useStore(BlogStore, (state) => state.blogs);
+    const [data, setData] = useState(z.array(blogSchema).parse(storeBlogs));
+    const setBlogs = useStore(BlogStore, (state) => state.setBlogs);
+
+    const removeBlog = useStore(BlogStore, (state) => state.removeBlog);
+
+    const deleteBlogId = async (id: string) => {
+        try {
+            await deleteBlog(id);
+            removeBlog(id);
+            toast.success("Blog deleted!");
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    useEffect(() => {
+        setBlogs(blogs);
+    }, [blogs]);
+
+    useEffect(() => {
+        setData(z.array(blogSchema).parse(storeBlogs));
+    }, [storeBlogs]);
 
     return (
-        <>
-            <div className="grid gird-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-8 gap-3">
-                <Link href={"/blog/e/new"}>
-                    <Card className="flex flex-col space-y-2 pt-2">
-                        <div className="flex items-center flex-col">
-                            <FilePlus2  size={36} />
-                            <Separator className="mt-2" />
-                        </div>
-
-                        <h2 className="text-sm font-bold pb-2 px-2">Create New Blog</h2>
-                    </Card>
-                </Link>
-
-                {blogs.map((blog, key) => (
-                    <Link key={key} href={`/blog/e/${blog.id}` as string}>
-                        <Card className="flex flex-col space-y-2 pt-2">
-                            <div className="flex items-center flex-col">
-                                <StickyNote size={36} />
-                                <Separator className="mt-2" />
-                            </div>
-                            <h2 className="text-sm font-bold pb-2 px-2">{blog.title}</h2>
-                        </Card>
+        <Card className="p-8">
+            <DataTable
+                columns={columns}
+                data={data}
+                deleteFn={deleteBlogId}
+                extraToolbar={
+                    <Link
+                        href={"/blog/e/new"}
+                    >
+                        <EnhanceButton
+                            variant={"outline"}
+                            className="h-[32px] text-xs"
+                            size={"sm"}
+                        >
+                            New
+                        </EnhanceButton>
                     </Link>
-                ))}
-            </div>
-
-        </>
-
+                }
+            />
+        </Card>
     )
 }
 

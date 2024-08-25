@@ -1,14 +1,13 @@
 import { auth } from "@/auth";
 import HTML from "@/components/files/html-viewer";
 import Pdf from "@/components/files/pdf";
-import { getFileId } from "@/db/user";
-import { isHTML, isPDF } from "@/lib/utils";
+import { getFileId } from "@/db/storage";
+import { getFile, isHTML, isImage, isPDF } from "@/lib/utils";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
     title: "File",
 };
-
 
 export default async function FilePage(
     { params, searchParams }: { params: { id: string }; searchParams: URLSearchParams },
@@ -38,9 +37,16 @@ export default async function FilePage(
         return <HTML file={file.successs} />
     }
 
-
     if (file.successs && isPDF(file.successs.url)) {
         return <Pdf url={file.successs.url} />
+    }
+
+    if (file.successs && isImage(file.successs.url)) {
+        return (
+            <div>
+                <img src={getFile(file.successs.url, "")} alt="file" />
+            </div>
+        )
     }
 
     return (

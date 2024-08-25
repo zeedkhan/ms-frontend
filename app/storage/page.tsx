@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
-import StorageItems from "@/components/storage/storage-items";
-import { getUserStorge } from "@/db/user";
+import Storage from "@/components/storage/storage";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -13,9 +12,7 @@ export default async function StoragePage() {
 
     if (!session?.user) {
         return null;
-    }
+    };
 
-    const files = await getUserStorge(session.user.id);
-
-    return <StorageItems items={files || []} />
+    return <Storage />
 }

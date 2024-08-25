@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "./ui/breadcrumb";
+import { useSearchParams } from "next/navigation";
 
 type Route = {
     title: string;
@@ -12,6 +15,7 @@ type CustomBreadCrumb = {
 
 
 const CustomBreadCrumb = ({ routes }: CustomBreadCrumb) => {
+    const searchParam = useSearchParams();
     return (
         <Breadcrumb>
             <BreadcrumbList>
@@ -19,7 +23,7 @@ const CustomBreadCrumb = ({ routes }: CustomBreadCrumb) => {
                     <div key={index} className="dark:text-white flex items-center space-x-1">
                         <BreadcrumbItem key={index}>
                             <BreadcrumbLink asChild >
-                                <Link href="/">{item.title}</Link>
+                                <Link href={item.url + "?" + searchParam}>{item.title}</Link>
                             </BreadcrumbLink>
                         </BreadcrumbItem>
 

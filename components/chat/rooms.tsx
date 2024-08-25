@@ -8,10 +8,10 @@ import { useSession } from 'next-auth/react';
 import CreateRoomModal from './create-room';
 import RoomStore from '@/state/room';
 import { Room } from '@/types';
-import { useRouter } from 'next/navigation';
 import UseWindowSize from '@/hooks/use-window-size';
 import { useEffect } from 'react';
 import { getUserChats } from '@/db/chat';
+import { useRouter } from '../loader/use-router';
 
 interface DisplayRoomProps {
     extraClasses?: string;

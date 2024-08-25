@@ -1,6 +1,6 @@
 import { AUTH_ROUTES, UPLOAD_ROUTES } from "@/routes"
-import { UpdateAvatar, UpdateUserSchema, UploadFileToStorage } from "@/schemas"
-import { StorageFile, User } from "@/types"
+import { UpdateAvatar, UpdateUserSchema } from "@/schemas"
+import { User } from "@/types"
 import axios from "axios"
 import { z } from "zod"
 
@@ -77,69 +77,6 @@ export const updateUserAvatar = async (
         console.error(err)
         return {
             error: "something went wrong!"
-        }
-    }
-}
-
-export const uploadFileToStorage = async (
-    payload: z.infer<typeof UploadFileToStorage>
-): Promise<Response> => {
-    const validatedFields = UploadFileToStorage.safeParse(payload);
-    if (!validatedFields.success) {
-        return { error: "Invalid fields!" };
-    }
-    try {
-        const { userId } = validatedFields.data
-        const request = await axios.post(`${UPLOAD_ROUTES.userStorage}/${userId}`, payload);
-
-        console.log("request", request)
-        return {
-            success: "Updated!"
-        }
-    } catch (err) {
-        console.log("Error", err)
-        console.error(err)
-        return {
-            error: "something went wrong!"
-        }
-    }
-}
-
-export const getUserStorge = async (userId: string): Promise<StorageFile[]> => {
-    try {
-        const request = await axios.get<{ data: StorageFile[] }>(`${UPLOAD_ROUTES.userStorage}/${userId}`);
-        return request.data.data;
-    } catch (err) {
-        console.error(err)
-        return []
-    }
-};
-
-type GetFileId = {
-    successs?: StorageFile
-    error?: string
-}
-
-export const getFileId = async (fileId: string, userId: string): Promise<GetFileId> => {
-    try {
-        const request = await axios.get<{ data: StorageFile }>(`${UPLOAD_ROUTES.getFileId}/${fileId}`);
-        if (!request.data.data) {
-            return {
-                error: "Not found!"
-            }
-        }
-        if (request.data.data.userId !== userId) {
-            return {
-                error: "Not authorized!"
-            }
-        }
-        return {
-            successs: request.data.data
-        }
-    } catch (err) {
-        console.error(err)
-        return {
-            error: "Something went wrong!"
         }
     }
 }

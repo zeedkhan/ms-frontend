@@ -9,14 +9,16 @@ import AdminPanelLayout from "@/components/layout/layout-wrapper";
 import { ContentLayout } from "@/components/layout/content-layout";
 import { SocketProvider } from "@/components/providers/socket-provider";
 import HoverPlayer from "@/components/speech/hover-player";
-import Script from "next/script";
-import CombinedCapture from "@/components/capture/combine-capture";
+import NextTopLoader from "@/components/loader/top-loader";
+import { Navbar } from "@/components/nav/navbar";
+import { Footer } from "@/components/layout/footer";
+import AppNavigate from "@/components/navigation/app-navigate";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Next Auth | NextJS",
-  description: "Authentication using next-auth-v5",
+  title: "Quickstart",
+  description: "Authentication",
   icons: {
     icon: "/icon.png",
   },
@@ -36,15 +38,18 @@ export default async function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <body className={inter.className}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <NextTopLoader />
             <SocketProvider>
               <Toaster />
+              <Navbar title="Test" />
               <AdminPanelLayout>
                 <ContentLayout title="Your Blogs">
                   {children}
                 </ContentLayout>
               </AdminPanelLayout>
+              <Footer />
             </SocketProvider>
-            <CombinedCapture />
+            <AppNavigate />
             <HoverPlayer />
           </ThemeProvider>
         </body>
