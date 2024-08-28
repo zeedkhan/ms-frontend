@@ -107,7 +107,7 @@ const StorageStore = create<StorageController>((set, get) => ({
     createDirectory: (directory) => {
         set((prev) => {
             const newDirectories = [directory, ...prev.directories];
-            return { ...prev, directories: newDirectories };
+            return { ...prev, directories: newDirectories, permanentDirectories: newDirectories };
         });
     }
 }));

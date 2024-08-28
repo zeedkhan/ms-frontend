@@ -103,12 +103,12 @@ const ModifyAt: React.FC = () => {
             <DropdownMenuTrigger asChild>
                 <Card
                     className={cn(
-                        `min-w-32 rounded-full h-full cursor-pointer my-8 active:scale-95`,
+                        `min-w-32 rounded-full h-full cursor-pointer active:scale-95`,
                         selectedIdx >= 0 ? "bg-sky-200 dark:text-black" : " "
                     )}>
                     <CardContent className="p-0 py-2 px-4 h-full w-full flex items-center justify-between text-sm">
                         <Calendar size={18} />
-                        <p className="px-4">{selectedIdx >= 0 ? options[selectedIdx].key : "Modified"}</p>
+                        <p className="">{selectedIdx >= 0 ? options[selectedIdx].key : "Modified"}</p>
                         <ChevronDown size={18} />
                     </CardContent>
                 </Card>
@@ -199,7 +199,7 @@ const TypeFiles: React.FC = () => {
             <DropdownMenuTrigger asChild>
                 <Card
                     className={cn(
-                        "dark:text-white text-black min-w-32 rounded-full h-full cursor-pointer my-8 active:scale-95 ",
+                        "dark:text-white text-black min-w-32 rounded-full h-full cursor-pointer  active:scale-95 ",
                         selectedIdx >= 0 ? "bg-sky-200 dark:text-black" : " "
                     )}
                 >
@@ -259,10 +259,10 @@ const ViewOptions: React.FC = () => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Card className="min-w-32 rounded-full h-full cursor-pointer my-8 active:scale-95">
+                <Card className="min-w-32 rounded-full h-full cursor-pointer active:scale-95">
                     <CardContent className="p-0 py-2 px-4 h-full w-full flex items-center justify-between text-sm">
                         {selectedIdx <= 0 ? <LayoutGrid size={18} /> : <List size={18} />}
-                        <p className="px-4">{selectedIdx >= 0 ? options[selectedIdx].key : "Grid"}</p>
+                        <p className="md:px-4">{selectedIdx >= 0 ? options[selectedIdx].key : "Grid"}</p>
                         <ChevronDown size={18} />
                     </CardContent>
                 </Card>
@@ -286,9 +286,8 @@ const ViewOptions: React.FC = () => {
 
 const Filter: React.FC = () => {
     return (
-        <div className="flex items-center justify-center space-x-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 px-7 gap-4 py-8 max-w-lg ">
             <SelectItemsOptions />
-            <TypeFiles />
             <ModifyAt />
             <ViewOptions />
         </div>

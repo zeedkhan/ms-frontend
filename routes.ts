@@ -47,6 +47,11 @@ export const AUTH_ROUTES = {
   verifyEmail: process.env.NEXT_PUBLIC_GATEWAY + "/token",
 };
 
+
+export const ServerRoutes = {
+  domain: process.env.NEXT_PUBLIC_SOCKET_URL,
+}
+
 export const UPLOAD_ROUTES = {
   uploads: process.env.NEXT_PUBLIC_UPLOAD + "/upload",
   editUserAvatar: process.env.NEXT_PUBLIC_GATEWAY + "/user/avatar",
@@ -74,6 +79,10 @@ export const UPLOAD_ROUTES = {
 
   // Search
   searchDirectoryAndStorage: process.env.NEXT_PUBLIC_GATEWAY + "/user/search/object",
+}
+
+export const CMS_ROUTES = {
+  cms: process.env.NEXT_PUBLIC_GATEWAY + "/cms",
 }
 
 export const BLOG_ROUTES = {

@@ -171,3 +171,25 @@ export type SearchResult = {
     updatedAt: string;
     id: string
 }
+
+export type integrationType = {
+    id: number;
+    key: string;
+    name: string;
+    cmsIntegrations: CMSIntegrations[]
+}
+
+export type CMSIntegrations = {
+    id: number;
+    cmsId: number;
+    cms: CMS;
+    integrationTypeId: number
+    integrationType: integrationType
+    value: boolean;
+}
+
+export type CMS = {
+    id: number;
+    name: string;
+    integrations: CMSIntegrations[]
+}

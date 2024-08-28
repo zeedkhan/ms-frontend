@@ -27,6 +27,7 @@ const CreateDirectory = ({ children }: { children: ReactNode }) => {
             });
             console.log("directory", directory);
 
+
             store.createDirectory(directory)
 
             setOpen(false);

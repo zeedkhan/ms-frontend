@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 
 const StorageLayout = ({ children }: { children: ReactNode }) => {
     return (
-        <div className="flex space-x-4">
+        <div>
             <div className="flex-1">
                 {children}
             </div>
