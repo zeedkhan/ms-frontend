@@ -74,7 +74,7 @@ const SelectItemsOptions: React.FC = () => {
 
                 <Card
                     className={cn(
-                        "dark:text-white text-black min-w-32 rounded-full h-full cursor-pointer my-8 active:scale-95 ",
+                        "dark:text-white text-black min-w-32 rounded-full h-full cursor-pointer active:scale-95 ",
                     )}
                 >
                     <CardContent className="p-0 py-2 px-4 h-full w-full flex items-center justify-between text-sm">

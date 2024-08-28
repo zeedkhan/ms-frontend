@@ -137,7 +137,7 @@ const Editor: React.FC<EditorProps> = ({ data, holder, onChange, userId, blogId 
     }, [cb]);
 
     return (
-        <div className="p-5 flex flex-col space-y-4">
+        <div className="p-5 flex flex-col space-y-4 pb-20">
             <div className="editor-container dark:text-black">
                 <div id={holder}>
                     <div id="editor-container"></div>

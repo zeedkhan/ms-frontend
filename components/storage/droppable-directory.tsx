@@ -50,7 +50,7 @@ export const DroppableDirectoryContainer = ({
 }) => {
     const directories: DirectoryType[] = StorageStore((state) => state.directories);
     return (
-        <div className="w-full p-8 pb-0 flex flex-wrap">
+        <div className="w-full p-6 pb-0 flex flex-wrap">
             {directories.map((directory) => (
                 <div className='p-2' key={directory.id}>
                     <DroppableDirectory

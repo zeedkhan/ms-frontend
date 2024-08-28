@@ -34,7 +34,7 @@ const customRender = (content: OutputData) => {
                 return <EmbedComponent block={block} />
             case "image":
                 return <ImageComponent block={block} />
-            case "header":                
+            case "header":
                 return <>
                     <Markdown content={block.data.text} />
                     <Separator className="border-xl bg-gray-200 w-full h-0.5 " />
@@ -77,18 +77,16 @@ const BlogId: React.FC<BlogIdProps> = ({ content }) => {
     if (!content || !content.blocks) return null;
 
     return (
-        <>
-            <Card className=" bg-white w-full dark:text-black space-y-2 flex flex-col items-center justify-center px-4">
-                <CardContent className="p-4 w-full max-w-3xl">
-                    {test.map((dom, index) => (
-                        <div key={index} className="p-1.5">
-                            {dom}
-                        </div>
-                    ))}
+        <Card className=" bg-white w-full dark:text-black space-y-2 flex flex-col items-center justify-center px-4">
+            <CardContent className="p-4 w-full max-w-3xl">
+                {test.map((dom, index) => (
+                    <div key={index} className="p-1.5">
+                        {dom}
+                    </div>
+                ))}
 
-                </CardContent>
-            </Card>
-        </>
+            </CardContent>
+        </Card>
     )
 };
 

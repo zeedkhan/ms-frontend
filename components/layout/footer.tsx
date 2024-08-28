@@ -21,13 +21,13 @@ export function Footer() {
     return (
         <footer
             className={cn(
-                "fixed bottom-0 w-full",
+                "fixed bottom-0 w-full  z-50",
                 "transition-[margin-left] ease-in-out duration-300",
                 shouldShow,
             )}
         >
             <div className={cn(
-                "w-full bg-background/95 shadow backdrop-blur supports-[backdrop-filter]:bg-background/60",
+                "w-full shadow backdrop-blur supports-[backdrop-filter]:bg-background/60",
             )}>
                 <div className="mx-4 md:mx-8 flex h-14 items-center justify-evenly">
                     <p className={cn(
