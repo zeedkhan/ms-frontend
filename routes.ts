@@ -81,10 +81,6 @@ export const UPLOAD_ROUTES = {
   searchDirectoryAndStorage: process.env.NEXT_PUBLIC_GATEWAY + "/user/search/object",
 }
 
-export const CMS_ROUTES = {
-  cms: process.env.NEXT_PUBLIC_GATEWAY + "/cms",
-}
-
 export const BLOG_ROUTES = {
   blog: process.env.NEXT_PUBLIC_GATEWAY + "/blog",
   seoPathCheck: process.env.NEXT_PUBLIC_GATEWAY + "/blog/path"

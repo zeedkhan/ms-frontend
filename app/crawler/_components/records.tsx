@@ -1,7 +1,6 @@
 "use client";
 
 import { DataTable } from "@/components/ui/data-table/data-table";
-import { getCMS } from "@/db/cms";
 import { useEffect, useState } from "react";
 import { columns } from "./columns";
 import { EnhanceButton } from "@/components/ui/enhance-button";
@@ -15,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "
 import { Cat, Dog, Fish, PlusCircleIcon, Rabbit, Trash, Turtle } from "lucide-react";
 import { MultiSelect } from "@/components/ui/multi-select";
 import axios from "axios";
-import { CMS_ROUTES } from "@/routes";
+// import { CMS_ROUTES } from "@/routes";
 
 
 const frameworksList = [
@@ -214,13 +213,6 @@ const CreateNewCMS = () => {
 const Records = () => {
 
     const [records, setRecords] = useState([]);
-
-    useEffect(() => {
-        (async () => {
-            const response = await getCMS();
-            console.log(response)
-        })();
-    }, []);
 
     const fn = (id: string): Promise<void> => {
         return new Promise((resolve) => resolve());

@@ -94,7 +94,7 @@ const Directory: React.FC<DirectoryProps> = ({
 
     const [, dragRef] = useDrag({
         type: 'DIRECTORY',
-        item: { ids: selectIds, type: 'directory' },
+        item: { ids: selectIds.ids, type: 'directory' },
         canDrag() {
             return selectIds.ids.length > 0 && selectIds.ids.includes(directory.id);
         },

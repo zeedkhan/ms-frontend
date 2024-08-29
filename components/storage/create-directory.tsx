@@ -18,15 +18,14 @@ const CreateDirectory = ({ children }: { children: ReactNode }) => {
     const [open, setOpen] = useState(false);
 
     const handleCreateFolder = async () => {
-        const currentDirectory = pathname.split("/").pop();
+        const currentDirectory =  pathname.split("/").pop();
+        const parentId = currentDirectory === "storage" ? undefined : currentDirectory as string;
         try {
             const directory = await createDirectory({
                 name: curName,
                 userId: session.data?.user.id as string,
-                parentId: currentDirectory
+                parentId: parentId
             });
-            console.log("directory", directory);
-
 
             store.createDirectory(directory)
 
