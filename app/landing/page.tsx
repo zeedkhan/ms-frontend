@@ -16,12 +16,11 @@ import VoiceAI from "./_components/voice-ai";
 import Bg from "./_components/bg";
 import RecentProjects from "./_components/recent-projects";
 
-
 export default function Page() {
     return (
         <div className="relative w-full h-full pb-16 px-4 overflow-hidden">
             <Head title='Welcome' />
-            {/* <Bg /> */}
+            <Bg />
 
             <WavyWords
                 text={"Hello! I'm Seed, Frontend Developer & Marketing Specialist"}
