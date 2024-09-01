@@ -3,9 +3,12 @@
 import { PlugZap, Unplug } from "lucide-react";
 import { useSocket } from "../providers/socket-provider";
 import { Badge } from "../ui/badge";
+import { useSession } from "next-auth/react";
 
 const SocketIndecator = () => {
     const { isConnected } = useSocket();
+    const session = useSession();
+    
     if (!isConnected) {
         return (
             <Badge
@@ -14,7 +17,7 @@ const SocketIndecator = () => {
             >
                 <Unplug size={18} />
                 <p>
-                    Fallback: Polling for connection
+                    {session.data?.user ? "Fallback: Polling for connection" : "Not logged in"}
                 </p>
             </Badge>
         );

@@ -3,16 +3,20 @@
 import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
 import UseWindowSize from "@/hooks/use-window-size";
 import { cn } from "@/lib/utils";
+import { publicRoutes } from "@/routes";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useStore } from "zustand";
 
 export function Footer() {
     const session = useSession();
     const sidebar = useStore(useSidebarToggle, (state) => state);
+    const pathname = usePathname();
     const { isMobile } = UseWindowSize();
-    const shouldShow = !session.data ? "ml-0" : (sidebar?.isOpen === false) ? "lg:ml-[90px]" : "lg:ml-72";
-    const padLeft = !session.data ? "pr-0" : (sidebar?.isOpen === false) ? "lg:pr-[90px]" : "lg:pr-72";
+
+    const shouldShow = (publicRoutes.includes(pathname) || !session.data) ? "ml-0" : (sidebar?.isOpen === false) ? "lg:ml-[90px]" : "lg:ml-72";
+    const padLeft = (publicRoutes.includes(pathname) || !session.data) ? "pr-0" : (sidebar?.isOpen === false) ? "lg:pr-[90px]" : "lg:pr-72";
 
     if (isMobile) {
         return null;

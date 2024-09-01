@@ -33,7 +33,7 @@ const Content: React.FC = () => {
 
     return (
         <div
-            className="h-full max-h-[calc(100vh-176px)] overflow-hidden overflow-y-auto">
+            className="h-full ">
             {images.length === 0 && (
                 <DndProvider
                     backend={HTML5Backend}

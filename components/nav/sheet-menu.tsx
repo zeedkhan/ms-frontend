@@ -14,8 +14,8 @@ import { Menu } from "../sidebar/menu";
 export function SheetMenu() {
     return (
         <Sheet>
-            <SheetTrigger className="lg:hidden" asChild>
-                <Button className="h-8" variant="outline" size="icon">
+            <SheetTrigger  asChild>
+                <Button className="h-8 w-8 rounded-full" variant="outline" size="icon">
                     <MenuIcon size={20} />
                 </Button>
             </SheetTrigger>

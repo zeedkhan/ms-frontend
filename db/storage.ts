@@ -7,7 +7,8 @@ import { z } from "zod"
 
 type Response = {
     success?: string;
-    error?: string
+    error?: string;
+    data?: StorageFile
 }
 
 
@@ -46,11 +47,15 @@ export const uploadFileToStorage = async (
     }
     try {
         const { userId } = validatedFields.data
-        const request = await axios.post(`${UPLOAD_ROUTES.userStorage}/${userId}`, payload);
+        const request = await axios.post(`${UPLOAD_ROUTES.userStorage}/${userId}`, payload, {
+            headers: {
+                "x-folder": payload.folder || undefined
+            }
+        });
 
-        console.log("request", request)
         return {
-            success: "Updated!"
+            success: "Updated!",
+            data: request.data.data
         }
     } catch (err) {
         console.log("Error", err)

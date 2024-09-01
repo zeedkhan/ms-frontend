@@ -87,11 +87,13 @@ body {
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border !scroll-smooth;
   }
-
   body {
     @apply bg-background text-foreground;
+  }
+  button {
+    @apply active:outline-none;
   }
 }
 

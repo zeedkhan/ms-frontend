@@ -16,13 +16,13 @@ export function Sidebar() {
         <aside
             className={cn(
                 "rounded-xl shadow-xl",
-                "fixed top-0 left-0 z-20 h-screen -translate-x-full lg:translate-x-0 transition-[width] ease-in-out duration-300",
+                "fixed top-0 left-0 z-50 h-screen -translate-x-full lg:translate-x-0 transition-[width] ease-in-out duration-300",
                 sidebar?.isOpen === false ? "w-[90px]" : "w-72"
             )}
         >
             <SidebarToggle isOpen={sidebar?.isOpen} setIsOpen={sidebar?.setIsOpen} />
             <div className="h-full flex flex-col space-y-4 shadow-md dark:shadow-zinc-800">
-                <div className="w-full h-14">
+                <div className="w-full h-[56px]">
                     <Button
                         className={cn(
                             "w-full h-full transition-transform ease-in-out duration-300",
@@ -31,7 +31,7 @@ export function Sidebar() {
                         variant="link"
                         asChild
                     >
-                        <Link href="/dashboard" className="flex items-center gap-2">
+                        <Link href="/dashboard" className=" flex items-center gap-2">
                             <PanelsTopLeft className="w-6 h-6 mr-1" />
                             <h1
                                 className={cn(
@@ -45,10 +45,12 @@ export function Sidebar() {
                             </h1>
                         </Link>
                     </Button>
-                    <Separator className="mt-1"/>
+                    {/* <Separator className="mt-1" /> */}
+                </div>
+                <div className="h-full  overflow-y-auto">
+                    <Menu isOpen={sidebar?.isOpen} />
                 </div>
 
-                <Menu isOpen={sidebar?.isOpen} />
 
             </div>
         </aside>

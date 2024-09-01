@@ -3,7 +3,14 @@
  * These routes do not require authentication
  * @type {string[]}
  */
-export const publicRoutes = ["/", "/auth/new-verification"];
+export const publicRoutes = [
+  "/",
+  "/auth/new-verification",
+  "/background-removal",
+  "/crawler",
+  "/file",
+  "/landing",
+];
 
 export const blogRoutes = /^\/blog\/[a-zA-Z0-9-]+(?:\?.*)?$/;
 
@@ -79,10 +86,6 @@ export const UPLOAD_ROUTES = {
 
   // Search
   searchDirectoryAndStorage: process.env.NEXT_PUBLIC_GATEWAY + "/user/search/object",
-}
-
-export const CMS_ROUTES = {
-  cms: process.env.NEXT_PUBLIC_GATEWAY + "/cms",
 }
 
 export const BLOG_ROUTES = {

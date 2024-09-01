@@ -53,6 +53,7 @@ export const UploadFileToStorage = z.object({
   url: z.string().min(1),
   name: z.string().min(1),
   size: z.number().min(1),
+  folder: z.string().optional(),
 });
 
 export const UpdateAvatar = z.object({

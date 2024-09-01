@@ -10,10 +10,16 @@ import { uploadFileToStorage } from "@/db/storage";
 import { useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import CreateDirectory from "./create-directory";
+import { usePathname } from "next/navigation";
+import { useStore } from "zustand";
+import StorageStore from "@/state/storage";
 
 const UploadPopover = () => {
     const inputRef = useRef<HTMLInputElement>(null);
     const session = useSession();
+    const pathname = usePathname();
+    const setFiles = useStore(StorageStore, (state) => state.setFiles);
+    const files = useStore(StorageStore, (state) => state.files);
 
     const upload = async (file: File, folder: string) => {
         try {
@@ -25,11 +31,15 @@ const UploadPopover = () => {
                     userId: session.data?.user.id as string,
                     name: file?.name || "",
                     size: file?.size || 1,
+                    folder: folder
                 });
                 if (addStoratePath.error) {
                     toast.error('Error uploading');
                     console.error('Error uploading:', addStoratePath.error);
                     return;
+                }
+                if (addStoratePath.data) {
+                    setFiles([...files, addStoratePath.data]);
                 }
                 toast.success('Capture successfully uploaded.');
             } else {
@@ -49,9 +59,15 @@ const UploadPopover = () => {
     };
 
     const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        let directory = pathname.split("/").pop();
+        if (directory === "storage") {
+            directory = session.data?.user.id;
+        } else {
+            directory = session.data?.user.id + "/" + directory;
+        };
         const file = e.target.files?.[0];
         if (file) {
-            await upload(file, session.data?.user.id as string);
+            await upload(file, directory as string);
         }
     }
 
