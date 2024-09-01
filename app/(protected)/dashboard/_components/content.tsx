@@ -89,7 +89,7 @@ function Content() {
         },
         {
             title: "Blog",
-            path: "/blog",
+            path: "/blog/e",
             description: `Manage your blog`,
             children: (
                 <img

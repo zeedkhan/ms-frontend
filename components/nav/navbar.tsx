@@ -1,6 +1,5 @@
 "use client";
 
-import { ReactNode } from "react";
 import { SheetMenu } from "./sheet-menu";
 import { UserNav } from "./user-nav";
 import { ModeToggle } from "./mode-toggle";
@@ -9,30 +8,84 @@ import { useSession } from "next-auth/react";
 import { useStore } from "zustand";
 import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
 import { cn } from "@/lib/utils";
+import { publicRoutes } from "@/routes";
+import { usePathname } from "next/navigation";
+import { useMotionValueEvent, useScroll } from "framer-motion"
+import { useEffect, useMemo, useState } from "react";
+import UseWindowSize from "@/hooks/use-window-size";
+import { motion } from "framer-motion";
 
-interface NavbarProps {
-    title: ReactNode;
-}
 
-export function Navbar({ title }: NavbarProps) {
+export function Navbar() {
     const session = useSession();
     const sidebar = useStore(useSidebarToggle, (state) => state);
+    const pathname = usePathname();
+    const [float, setFloat] = useState(false);
+    const { isMobile } = UseWindowSize();
 
-    const shouldShow = !session.data ? "ml-0" : (sidebar?.isOpen === false) ? "lg:ml-[90px]" : "lg:ml-72";
-    // h-full bg-zinc-50 dark:bg-zinc-900  
+    useEffect(() => {
+        if (isMobile && sidebar.isOpen) {
+            sidebar.setIsOpen();
+        };
+
+    }, [isMobile]);
+
+    const { scrollY } = useScroll();
+
+
+    useMotionValueEvent(scrollY, "change", (latest) => {
+        if (latest > 100) {
+            setFloat(true);
+        } else {
+            setFloat(false);
+        }
+    })
+
+
+    const width = useMemo(() => {
+        if (!float && !isMobile && publicRoutes.includes(pathname)) {
+            return "100%"
+        }
+        if (isMobile && float) {
+            return "calc(100% - 32px)"
+        } else if (!isMobile && !float && !sidebar.isOpen) {
+            return `calc(100% - 90px)`
+        } else if (sidebar.isOpen && !isMobile && !float) {
+            return "calc(100% - 288px)"
+        } else if (!isMobile && float) {
+            return "32rem"
+        }
+        return "100%"
+    }, [isMobile, sidebar.isOpen, float, pathname])
+
     return (
-        <header
+
+        <motion.header
+            initial={{ width: "100%" }}
+            animate={{
+                top: float ? "10px" : "0",
+                x: (sidebar.isOpen && float && !isMobile && session.data?.user) ? "90px" : "0",
+                width: width,
+                marginLeft: "auto",
+                marginRight: float ? "auto" : "0",
+            }}
+            transition={{ duration: 0.3 }}
             className={cn(
-                `bg-background/95 shadow backdrop-blur`,
+                `bg-background/95 shadow backdrop-blur sticky z-[999] h-[56px]`,
                 `supports-[backdrop-filter]:bg-background/60 dark:shadow-secondary`,
-                `transition-[margin-left] ease-in-out duration-300`,
-                shouldShow
+                `${float ? "rounded-full shadow border" : ""}`,
+            )}
+
+        >
+            <div className={cn(
+                "mx-4 sm:mx-8 flex h-14 items-center",
             )}>
-            <div className="mx-4 sm:mx-8 flex h-14 items-center">
-                <div className="flex items-center space-x-4 lg:space-x-0">
+                <div className="flex items-center space-x-4">
                     <SheetMenu />
-                    <h1 className="font-bold"></h1>
+                    {/* <h1 className="font-bold">Test</h1> */}
                 </div>
+
+
                 <div className="flex flex-1 items-center space-x-2 justify-end">
                     <SocketIndecator />
                     {session.data && (
@@ -41,6 +94,6 @@ export function Navbar({ title }: NavbarProps) {
                     <ModeToggle />
                 </div>
             </div>
-        </header>
+        </motion.header >
     );
 }

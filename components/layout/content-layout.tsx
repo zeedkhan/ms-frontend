@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils";
 
 interface ContentLayoutProps {
-    title: string;
     children: React.ReactNode;
 }
 

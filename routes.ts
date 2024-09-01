@@ -3,7 +3,14 @@
  * These routes do not require authentication
  * @type {string[]}
  */
-export const publicRoutes = ["/", "/auth/new-verification"];
+export const publicRoutes = [
+  "/",
+  "/auth/new-verification",
+  "/background-removal",
+  "/crawler",
+  "/file",
+  "/landing",
+];
 
 export const blogRoutes = /^\/blog\/[a-zA-Z0-9-]+(?:\?.*)?$/;
 

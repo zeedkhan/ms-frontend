@@ -5,20 +5,19 @@ import { auth } from "@/auth";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "./_provider/theme-provider";
-import AdminPanelLayout from "@/components/layout/layout-wrapper";
-import { ContentLayout } from "@/components/layout/content-layout";
 import { SocketProvider } from "@/components/providers/socket-provider";
 import HoverPlayer from "@/components/speech/hover-player";
 import NextTopLoader from "@/components/loader/top-loader";
 import { Navbar } from "@/components/nav/navbar";
 import { Footer } from "@/components/layout/footer";
 import AppNavigate from "@/components/navigation/app-navigate";
+import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Quickstart",
-  description: "Authentication",
+  description: "Welcome to Tanakit - Project",
   icons: {
     icon: "/icon.png",
   },
@@ -36,17 +35,18 @@ export default async function RootLayout({
   return (
     <SessionProvider session={session}>
       <html lang="en" suppressHydrationWarning>
-        <body className={inter.className}>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <body className={cn(inter.className, "h-fit")}>
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
             <NextTopLoader />
             <SocketProvider>
               <Toaster />
-              <Navbar title="Test" />
-              <AdminPanelLayout>
-                <ContentLayout title="Your Blogs">
+              <Navbar />
+              {children}
+              {/* <AdminPanelLayout>
+                <ContentLayout>
                   {children}
                 </ContentLayout>
-              </AdminPanelLayout>
+              </AdminPanelLayout> */}
               <Footer />
             </SocketProvider>
             <AppNavigate />
