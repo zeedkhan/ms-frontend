@@ -21,7 +21,7 @@ export function Navbar() {
     const sidebar = useStore(useSidebarToggle, (state) => state);
     const pathname = usePathname();
     const [float, setFloat] = useState(false);
-    const { isMobile } = UseWindowSize();
+    const { isMobile, isTablet } = UseWindowSize();
 
     useEffect(() => {
         if (isMobile && sidebar.isOpen) {
@@ -48,7 +48,7 @@ export function Navbar() {
         }
         if (isMobile && float) {
             return "calc(100% - 32px)"
-        } else if (!isMobile && !float && !sidebar.isOpen) {
+        } else if (!isMobile && !float && !sidebar.isOpen && !isTablet) {
             return `calc(100% - 90px)`
         } else if (sidebar.isOpen && !isMobile && !float) {
             return "calc(100% - 288px)"
@@ -56,7 +56,7 @@ export function Navbar() {
             return "32rem"
         }
         return "100%"
-    }, [isMobile, sidebar.isOpen, float, pathname])
+    }, [isMobile, sidebar.isOpen, float, pathname, isTablet])
 
     return (
 
@@ -71,9 +71,9 @@ export function Navbar() {
             }}
             transition={{ duration: 0.3 }}
             className={cn(
-                `bg-background/95 shadow backdrop-blur sticky z-[999] h-[56px]`,
+                `bg-background/95 shadow backdrop-blur sticky h-[56px]`,
                 `supports-[backdrop-filter]:bg-background/60 dark:shadow-secondary`,
-                `${float ? "rounded-full shadow border" : ""}`,
+                `${float ? "rounded-full shadow border z-[999]" : "z-50"}`,
             )}
 
         >

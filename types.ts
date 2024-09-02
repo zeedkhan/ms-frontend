@@ -154,6 +154,12 @@ export type Blog = {
     userId: string;
     version: number;
     seoPath: string;
+
+    ogImage?: string;
+    ogUrl?: string;
+    ogType?: string;
+    keywords?: string[];
+
     createdAt?: string;
     updatedAt?: string;
     pageViews?: number;

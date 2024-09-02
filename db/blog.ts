@@ -1,6 +1,8 @@
 import { BLOG_ROUTES } from "@/routes"
+import { blogSchema } from "@/schemas";
 import { Blog } from "@/types"
 import axios from "axios"
+import { z } from "zod";
 
 type Response = {
     success?: string;
@@ -53,7 +55,16 @@ const getUserBlogs = async (userId: string): Promise<Blog[]> => {
 
 
 // create a new blog
-const createBlog = async (payload: Blog): Promise<Response> => {
+const createBlog = async (payload: z.infer<typeof blogSchema>): Promise<Response> => {
+   
+    const validatedFields = blogSchema.safeParse(payload);
+
+    if (!validatedFields.success) {
+        return { error: "Invalid fields!", data: validatedFields.error.errors };
+    }
+
+    console.log("Create payload", payload)
+   
     try {
         const request = await axios.post(`${BLOG_ROUTES.blog}`, payload);
         if (request.data.error) {
@@ -74,11 +85,11 @@ const createBlog = async (payload: Blog): Promise<Response> => {
 };
 
 // update a blog
-const updateBlog = async (payload: Blog): Promise<Response> => {
-    // const validatedFields = blogSchema.safeParse(payload);
-    // if (!validatedFields.success) {
-    //     return { error: "Invalid fields!" };
-    // }
+const updateBlog = async (payload: z.infer<typeof blogSchema>): Promise<Response> => {
+    const validatedFields = blogSchema.safeParse(payload);
+    if (!validatedFields.success) {
+        return { error: "Invalid fields!", data: validatedFields.error.errors };
+    }
 
     try {
         const request = await axios.put(`${BLOG_ROUTES.blog}/${payload.id}`, payload);
@@ -98,7 +109,7 @@ const updateBlog = async (payload: Blog): Promise<Response> => {
 const deleteBlog = async (id: string): Promise<Response> => {
     try {
         const request = await axios.delete(`${BLOG_ROUTES.blog}/${id}`);
-        
+
         console.log("request", request)
         return {
             success: "Deleted!"

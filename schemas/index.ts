@@ -35,16 +35,21 @@ export const UpdateUserSchema = z.object({
 
 
 export const blogSchema = z.object({
+  id: z.string().optional(),
   title: z.string().min(6, {
     message: "Title is required"
   }),
   description: z.string().optional(),
   userId: z.string(),
-  content: z.object({}),
+  content: z.any(),
   version: z.number(),
   seoPath: z.string().regex(/^[a-z0-9-]+$/).min(4, {
     message: "SEO path is required"
   }),
+  keywords: z.array(z.string()).optional(),
+  ogImage: z.string().optional(),
+  ogType: z.string().optional(),
+  ogUrl: z.string().optional(),
 });
 
 export const UploadFileToStorage = z.object({
