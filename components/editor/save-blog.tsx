@@ -7,37 +7,23 @@ import { blogSchema } from "@/schemas";
 import { useRouter } from "../loader/use-router";
 import { EnhanceButton } from "../ui/enhance-button";
 import { CirclePlus } from "lucide-react";
+import { z } from "zod";
 
 type SaveBlogProps = {
-    payload: SaveData
+    payload: z.infer<typeof blogSchema>
     blogId: string | null,
     userId: string;
 } & React.HTMLProps<HTMLButtonElement>;
-
-type SaveData = {
-    title: string,
-    id?: string,
-    userId: string,
-    version: string | number,
-    content: OutputData,
-    description: string,
-    seoPath: string,
-}
 
 const SaveBlog: React.FC<SaveBlogProps> = ({ payload, blogId, disabled, ...res }) => {
 
     const router = useRouter();
 
-    const create = async ({ seoPath, title, userId, version = 1, content, description = "" }: SaveData) => {
+    const create = async (updateObject: z.infer<typeof blogSchema>) => {
         // save in database
         const validatedFields = blogSchema.safeParse({
             ...payload,
-            seoPath: seoPath,
-            title: title,
-            version: version,
-            content: content,
-            description: description,
-            userId: userId,
+            ...updateObject,
         });
 
         if (!validatedFields.success) {
@@ -48,12 +34,12 @@ const SaveBlog: React.FC<SaveBlogProps> = ({ payload, blogId, disabled, ...res }
 
         try {
             const blog = await createBlog({
-                content: content,
-                description: description,
-                title: title,
-                userId: userId,
+                content: updateObject.content,
+                description: updateObject.description || "",
+                title: updateObject.title,
+                userId: updateObject.userId,
+                seoPath: updateObject.seoPath,
                 version: 1,
-                seoPath: seoPath,
             });
             if (blog.error) {
                 toast.error(JSON.stringify(blog.error))
@@ -70,18 +56,12 @@ const SaveBlog: React.FC<SaveBlogProps> = ({ payload, blogId, disabled, ...res }
         }
     }
 
-    const edit = async ({ seoPath, id, title, userId, version = 1, content, description = "" }: SaveData) => {
+    const edit = async (updateObject: z.infer<typeof blogSchema>) => {
         // update in database
         try {
             const blog = await updateBlog({
                 ...payload,
-                id: id,
-                seoPath: seoPath,
-                title: title,
-                version: Number(version),
-                content: content,
-                description: description,
-                userId: userId,
+                ...updateObject,
             });
             if (blog.error) {
                 toast.error(JSON.stringify(blog.error))

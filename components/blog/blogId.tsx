@@ -15,19 +15,17 @@ import ImageComponent from "./content/image";
 import AudioPlayer from "./content/audio-player";
 import Mermaid from "./content/mermaid";
 import EmbedComponent from "./content/embed";
-import { ChevronDown } from "lucide-react";
-// @ts-ignore
-import edjsParser from "editorjs-parser"
+import { AspectRatio } from "@radix-ui/react-aspect-ratio";
+import { getFile } from "@/lib/utils";
 
 
 type BlogIdProps = {
     content: OutputData;
+    ogImage: string | undefined;
+    title: string;
 };
 
 const customRender = (content: OutputData) => {
-
-    const parser = new edjsParser(undefined);
-
     return content.blocks.map((block) => {
         switch (block.type) {
             case "embed":
@@ -67,11 +65,11 @@ const customRender = (content: OutputData) => {
     })
 }
 
-const BlogId: React.FC<BlogIdProps> = ({ content }) => {
-    const [test, setTest] = useState<ReactNode[]>([]);
+const BlogId: React.FC<BlogIdProps> = ({ content, ogImage, title }) => {
+    const [render, setRender] = useState<ReactNode[]>([]);
 
     useEffect(() => {
-        setTest(customRender(content));
+        setRender(customRender(content));
     }, [content]);
 
     if (!content || !content.blocks) return null;
@@ -79,7 +77,22 @@ const BlogId: React.FC<BlogIdProps> = ({ content }) => {
     return (
         <Card className=" bg-white w-full dark:text-black space-y-2 flex flex-col items-center justify-center px-4">
             <CardContent className="p-4 w-full max-w-3xl">
-                {test.map((dom, index) => (
+                
+                <h1 className="py-8 text-2xl text-center font-semibold">{title}</h1>
+                
+                {ogImage && (
+                    <div className="py-8">
+                        <div className="h-80 w-full">
+                            <AspectRatio ratio={16 / 9} className="h-80">
+                                <div className="bg-muted rounded-xl h-full">
+                                    <img src={getFile(ogImage, "") as string} className="h-full w-full object-cover object-top rounded-xl" alt="Blog Thumbnail" />
+                                </div>
+                            </AspectRatio>
+                        </div>
+                    </div>
+                )}
+
+                {render.map((dom, index) => (
                     <div key={index} className="p-1.5">
                         {dom}
                     </div>

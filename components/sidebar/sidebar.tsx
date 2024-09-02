@@ -1,13 +1,11 @@
 import Link from "next/link";
-import { PanelsTopLeft, Trash } from "lucide-react";
+import { PanelsTopLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
 import { useStore } from "zustand";
 import { SidebarToggle } from "./sidebar-toggle";
 import { Menu } from "./menu";
-import { Command, CommandInput, CommandItem, CommandList } from "../ui/command";
-import { Separator } from "../ui/separator";
 
 export function Sidebar() {
     const sidebar = useStore(useSidebarToggle, (state) => state);

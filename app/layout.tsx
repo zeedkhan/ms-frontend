@@ -31,7 +31,6 @@ export default async function RootLayout({
 }) {
   const session = await auth();
 
-
   return (
     <SessionProvider session={session}>
       <html lang="en" suppressHydrationWarning>
@@ -42,11 +41,6 @@ export default async function RootLayout({
               <Toaster />
               <Navbar />
               {children}
-              {/* <AdminPanelLayout>
-                <ContentLayout>
-                  {children}
-                </ContentLayout>
-              </AdminPanelLayout> */}
               <Footer />
             </SocketProvider>
             <AppNavigate />

@@ -16,6 +16,7 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { EnhanceButton } from "../ui/enhance-button";
 import { Eye, PenLine, Wrench } from "lucide-react";
+import BlogSetting from "./blog-setting";
 
 let Editor = dynamic(() => import("./editor"), {
     ssr: false,
@@ -53,6 +54,12 @@ const NewEditor = ({ blog, blogId }: BlogEditor) => {
     // duplicated path name
     const [isDuplicateSeoPath, setIsDuplicateSeoPath] = useState<null | boolean>(null);
 
+    const [keywords, setKeywords] = useState<string[]>(blog.keywords || []);
+
+    // og image
+    const [ogImage, setOgImage] = useState<string | undefined>(blog.ogImage || undefined);
+    const [ogType, setOgType] = useState<string | undefined>(blog.ogType || "website");
+
     const payload = useMemo(() => {
         return {
             title: title,
@@ -60,10 +67,13 @@ const NewEditor = ({ blog, blogId }: BlogEditor) => {
             description: description,
             content: content,
             seoPath: seoPath,
-            version: 1,
+            version: blog.version || 1,
+            keywords: keywords.filter((keyword) => keyword.trim() !== ""),
+            ogImage: ogImage,
+            ogType: ogType
         }
 
-    }, [title, description, content, session, seoPath]);
+    }, [title, description, content, session, seoPath, ogImage, ogType, keywords]);
 
     useEffect(() => {
         const params = new URLSearchParams(searchParams);
@@ -155,28 +165,28 @@ const NewEditor = ({ blog, blogId }: BlogEditor) => {
 
             {
                 selectIndex === 1 && (
-                    <div className="flex flex-col  space-y-4 pt-4 justify-center">
-                        <Input value={title} onChange={(e) => setTitle(e.target.value)} />
-                        <div className="w-1/2">
-                            <Textarea
-                                onChange={(e) => setDescription(e.target.value)}
-                                value={description}
-                                placeholder="Add a description" />
-                        </div>
+                    <BlogSetting
+                        blogId={blogId}
 
-                        {blog.seoPath !== seoPath && isDuplicateSeoPath !== null && isDuplicateSeoPath && (
-                            <p className="text-red-500">Seo path already exists</p>
-                        )}
+                        ogImage={ogImage}
+                        setOgImage={setOgImage}
 
-                        {isDuplicateSeoPath !== null && !isDuplicateSeoPath && (
-                            <p className="text-green-500">Seo path is available</p>
-                        )}
+                        ogType={ogType}
+                        setOgType={setOgType}
 
-                        <Input value={seoPath} onChange={(e) => {
-                            setSeoPath(e.target.value);
-                            setIsDuplicateSeoPath(null);
-                        }} placeholder="seo-path" />
-                    </div>
+                        keywords={keywords}
+                        setKeywords={setKeywords}
+
+                        title={title}
+                        setTitle={setTitle}
+                        description={description}
+                        setDescription={setDescription}
+                        seoPath={seoPath}
+                        prevSeoPath={blog.seoPath}
+                        setSeoPath={setSeoPath}
+                        isDuplicateSeoPath={isDuplicateSeoPath}
+                        setIsDuplicateSeoPath={setIsDuplicateSeoPath}
+                    />
                 )
             }
 
