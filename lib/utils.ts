@@ -90,3 +90,18 @@ export const isPDF = (fileName: string): boolean => {
 export const isHTML = (fileName: string): boolean => {
   return /\.(html?|xhtml)(\?.*)?$/i.test(fileName);
 };
+
+export async function dataUrlToFile(dataUrl: string, fileName: string): Promise<File> {
+  const res: Response = await fetch(dataUrl);
+  const blob: Blob = await res.blob();
+  return new File([blob], fileName, { type: 'image/png' });
+}
+
+/**
+ * Sanitizes a URL by replacing spaces with '%20'
+ * @param url - The URL to sanitize
+ * @returns The sanitized URL
+ */
+export function sanitizeUrl(url: string): string {
+  return url.replace(/\s+/g, '%20')
+}

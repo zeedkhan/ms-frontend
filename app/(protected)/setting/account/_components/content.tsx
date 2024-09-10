@@ -77,7 +77,7 @@ const Content: React.FC<ContentProps> = ({ session, userData }) => {
                 <CardDescription>Edit your account</CardDescription>
             </CardHeader>
 
-            <CardContent className="p-6">
+            <CardContent            >
                 <EditAvatar
                     url={getFile(userData.image, "https://cdn4.iconfinder.com/data/icons/avatars-xmas-giveaway/128/batman_hero_avatar_comics-512.png")}
                     objectId={userData.id}

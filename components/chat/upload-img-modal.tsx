@@ -6,14 +6,15 @@ import { v4 as uuidv4 } from 'uuid';
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import RoomStore from "@/state/room";
 import { useSocket } from "../providers/socket-provider";
 import { useSession } from "next-auth/react";
 import { uploadImage } from "@/db/upload";
+import { Room } from "@/types";
 
 
-const UploadImageMessageModal = () => {
-    const currentChat = RoomStore((state) => state.currentChat);
+const UploadImageMessageModal = ({
+    room
+}: { room: Room }) => {
     const { socket } = useSocket();
     const session = useSession();
 
@@ -38,16 +39,16 @@ const UploadImageMessageModal = () => {
     }, [file]);
 
     const handleSend = async () => {
-        if (session.status === "unauthenticated" || !currentChat?.id || !socket.id || !file) {
+        if (session.status === "unauthenticated" || !room?.id || !socket.id || !file) {
             toast.error("No connection");
             return;
         }
 
         try {
-            const res = await uploadImage(file, `chat/${currentChat.id}`);
+            const res = await uploadImage(file, `chat/${room.id}`);
             if (res?.storePath) {
                 socket.emit("message", {
-                    chatRoomId: currentChat.id,
+                    chatRoomId: room.id,
                     userId: session.data?.user.id,
                     type: "FILE",
                     text: "",
@@ -84,7 +85,7 @@ const UploadImageMessageModal = () => {
         }
     }
 
-    if (session.status === "unauthenticated" || !currentChat?.id || !socket.id) return null;
+    if (session.status === "unauthenticated" || !room?.id || !socket.id) return null;
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>

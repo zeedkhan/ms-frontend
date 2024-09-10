@@ -12,7 +12,6 @@ import {
 import { EnhanceButton } from "@/components/ui/enhance-button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import UseWindowSize from "@/hooks/use-window-size"
 import { cn } from "@/lib/utils"
 import RoomStore from "@/state/room"
 import { ArrowRightIcon, PlusCircleIcon } from "lucide-react"
@@ -37,7 +36,6 @@ function CreateRoomModal() {
     const [roomName, setRoomName] = useState("");
     const [open, setOpen] = useState(false);
     const { createRoom } = RoomStore();
-    const { isMobile } = UseWindowSize();
     const session = useSession();
     const [options, setOptions] = useState<Option[]>([])
 
@@ -79,13 +77,12 @@ function CreateRoomModal() {
                     Icon={ArrowRightIcon}
                     iconPlacement="right"
                     className={cn(
-                        "w-full h-full",
-                        isMobile ? "rounded-full" : "rounded-md",
+                       "w-full h-full rounded-full md:rounded-md",
                     )}
                 >
                     <div className="flex space-x-2 items-center">
                         <PlusCircleIcon />
-                        {!isMobile && <p>Create a room</p>}
+                        <p>Create a room</p>
                     </div>
                 </EnhanceButton>
             </DialogTrigger>

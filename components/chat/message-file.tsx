@@ -23,7 +23,7 @@ const OtherFile = ({ file }: { file: any }) => {
             className="flex items-center justify-center flex-col">
             <Package size={75} />
 
-            <p className="text-xs text-center text-gray-500 truncate w-28"><b>{file.name}</b></p>
+            <p className="text-xs text-center text-gray-500  w-28"><b>{file.name}</b></p>
 
             <p className="text-xs text-center text-gray-500 w-28">
                 <b className="">
@@ -62,7 +62,7 @@ const MessageFile = ({
     message
 }: { message: Message }) => {
     return (
-        <div>
+        <div className="flex-1">
             {message.files?.map((file) => (
                 <div key={file.id} className="cursor-pointer">
                     <File file={file} />

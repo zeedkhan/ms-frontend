@@ -1,4 +1,4 @@
-import DisplayRooms from "@/components/chat/rooms";
+import ListChat from "@/components/chat/list-chat";
 import AdminPanelLayout from "@/components/layout/layout-wrapper";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -13,14 +13,13 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
         <AdminPanelLayout>
             <Card
                 className={cn(
-                    "flex",
-                    "h-[calc(100vh-56px)] md:h-[calc(100vh-112px)]",
+                    "flex p-3 ",
+                    "h-[calc(100vh-56px)] border-none shadow-none ",
                 )}
             >
-                <DisplayRooms />
+                <ListChat />
                 {children}
             </Card>
         </AdminPanelLayout>
     )
 }
-

@@ -11,7 +11,7 @@ export default function ContentWrapper({ children, className }: ContentWrapper) 
     return (
         <Card
             style={{ minHeight: "180px" }}
-            className="rounded-lg border-none mt-6">
+            className="rounded-lg border-none">
             <CardContent className={cn("p-6", className)}>
                 <div className="flex justify-center items-center h-full">
                     {children || "Place Holder"}

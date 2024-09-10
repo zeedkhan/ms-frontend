@@ -62,6 +62,10 @@ export const ServerRoutes = {
   domain: process.env.NEXT_PUBLIC_SOCKET_URL,
 }
 
+export const AI_ROUTES = {
+  search: process.env.NEXT_PUBLIC_GATEWAY + "/crawler/ai/search",
+}
+
 export const UPLOAD_ROUTES = {
   uploads: process.env.NEXT_PUBLIC_UPLOAD + "/upload",
   editUserAvatar: process.env.NEXT_PUBLIC_GATEWAY + "/user/avatar",
@@ -97,6 +101,8 @@ export const BLOG_ROUTES = {
 }
 
 export const CHAT_ROUTES = {
+  userAIChats: process.env.NEXT_PUBLIC_GATEWAY + "/chat/ai/user",
+  aiChat: process.env.NEXT_PUBLIC_GATEWAY + "/chat/ai",
   userChats: process.env.NEXT_PUBLIC_GATEWAY + "/chat/user",
   editChatAvatar: process.env.NEXT_PUBLIC_GATEWAY + "/chat/avatar",
   chat: process.env.NEXT_PUBLIC_GATEWAY + "/chat",

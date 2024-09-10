@@ -22,8 +22,8 @@ export default function AdminPanelLayout({
             {session.data && <Sidebar />}
             <main
                 className={cn(
-                    "min-h-screen",
-                    " bg-zinc-50 dark:bg-zinc-900 transition-[margin-left] ease-in-out duration-300 pb-16",
+                    "min-h-[calc(100vh - 112px)]",
+                    " bg-zinc-50 dark:bg-zinc-900 transition-[margin-left] ease-in-out duration-300 ",
                     shouldShow
                 )}
             >
