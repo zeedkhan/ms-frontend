@@ -5,6 +5,7 @@ import { ArrowDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Message, RoomUsers } from "@/types";
 import MessageFile from "./message-file";
+import { ScrollArea } from "../ui/scroll-area";
 
 
 type ChatListProps = {
@@ -69,27 +70,28 @@ export function ChatList({ messages = [], users = [], userId }: ChatListProps) {
     if (!userId || messages.length === 0) return null
 
     return (
-        <div
+        <ScrollArea
             style={{ height: "calc(100% - 80px)" }}
-            className="pt-16 w-full overflow-y-auto overflow-x-hidden flex flex-col">
+            className={cn(
+                "w-full pt-16 border-r border-none mx-auto ",
+            )}
+        >
             <div
                 className="w-full overflow-y-auto overflow-x-hidden h-full flex flex-col">
 
                 {messages?.map((m, i) => (
-                    <div key={i} className={cn("flex flex-col gap-2 p-4 whitespace-pre-wrap", m.userId !== userId ? "items-start" : "items-end")}>
-                        <div className="flex gap-3 items-center" id={`msg-${m.id}`}>
-                            {m.userId !== userId && (
-                                <Avatar className="flex justify-center items-center">
-                                    <AvatarImage
-                                        src={avatar(m)}
-                                        alt={"asd"}
-                                        width={6}
-                                        height={6}
-                                    />
-                                </Avatar>
-                            )}
+                    <div key={i} className={cn("flex flex-col w-full p-4 whitespace-pre-wrap", "items-start")}>
+                        <div className="flex w-full space-x-2 items-center" id={`msg-${m.id}`}>
+                            <Avatar className="flex justify-center items-center">
+                                <AvatarImage
+                                    src={avatar(m)}
+                                    alt={"asd"}
+                                    width={6}
+                                    height={6}
+                                />
+                            </Avatar>
                             {m.type === "TEXT" && (
-                                <span className="bg-accent p-3 rounded-md max-w-80 min-w-20 break-words">
+                                <span className="p-3 rounded-md max-w-80 min-w-20 break-words">
                                     {m.text}
                                 </span>
                             )}
@@ -114,6 +116,6 @@ export function ChatList({ messages = [], users = [], userId }: ChatListProps) {
                     </div>
                 )}
             </div>
-        </div>
+        </ScrollArea>
     );
 }

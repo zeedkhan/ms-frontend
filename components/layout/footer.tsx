@@ -18,7 +18,7 @@ export function Footer() {
     const shouldShow = (publicRoutes.includes(pathname) || !session.data) ? "ml-0" : (sidebar?.isOpen === false) ? "lg:ml-[90px]" : "lg:ml-72";
     const padLeft = (publicRoutes.includes(pathname) || !session.data) ? "pr-0" : (sidebar?.isOpen === false) ? "lg:pr-[90px]" : "lg:pr-72";
 
-    if (isMobile) {
+    if (isMobile || pathname.includes("/chat")) {
         return null;
     }
 

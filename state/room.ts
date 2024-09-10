@@ -1,54 +1,68 @@
 import { create } from 'zustand'
 import { Message, Room } from '@/types';
-import { createChatRoom } from '@/db/chat';
+import { createAIChatRoom, createChatRoom } from '@/db/chat';
 
 interface ChatRoomController {
-    rooms: Room[];
-    setRooms: (rooms: Room[]) => void;
+    chatRooms: Room[];
+    aiChatRooms: Room[];
+    setRooms: (type: "ai" | "chat", rooms: Room[]) => void;
     createRoom: (userIds: string[], roomName: string) => Promise<void>;
-
-    currentChat: Room | null;
-    setCurrentChat: (chatRoom: Room | null) => void;
+    createAIChatRoom: (userIds: string[], roomName: string) => Promise<Room | null>;
+    updateRoom: (id: string, payload: Partial<Room>) => void;
 }
 
 const RoomStore = create<ChatRoomController>((set) => ({
-    rooms: [],
-    currentChat: null,
-    setRooms: (rooms) => {
-        set((prev) => ({ ...prev, rooms: rooms }))
+    chatRooms: [],
+    aiChatRooms: [],
+    setRooms: (type, rooms) => {
+        set((prev) => {
+            if (type === "ai") {
+                return { ...prev, aiChatRooms: rooms }
+            } else if (type === "chat") {
+                return { ...prev, chatRooms: rooms }
+            }
+            return prev
+        })
+    },
+    updateRoom: (id: string, payload: Partial<Room>) => {
+        set((prev) => {
+            const chatRooms = prev.chatRooms.map((room) => {
+                if (room.id === id) {
+                    return { ...room, ...payload }
+                }
+                return room;
+            });
+
+            const aiChatRooms = prev.aiChatRooms.map((room) => {
+                if (room.id === id) {
+                    return { ...room, ...payload }
+                }
+                return room;
+            });
+
+            return { ...prev, chatRooms, aiChatRooms }
+        })
+    },
+    createAIChatRoom: async (userIds, roomName) => {
+        const newChatRoom = await createAIChatRoom(userIds, roomName);
+        if (!newChatRoom) return null;
+        set((prev) => {
+            // Check if prev.rooms is an array, if not, initialize it as an empty array
+            const rooms = Array.isArray(prev.aiChatRooms) ? prev.aiChatRooms : [];
+            return { ...prev, aiChatRooms: [newChatRoom, ...rooms] };
+        });
+
+        return newChatRoom
     },
     createRoom: async (userIds, roomName) => {
         const newChatRoom = await createChatRoom(userIds, roomName);
         if (!newChatRoom) return;
         set((prev) => {
             // Check if prev.rooms is an array, if not, initialize it as an empty array
-            const rooms = Array.isArray(prev.rooms) ? prev.rooms : [];
+            const rooms = Array.isArray(prev.chatRooms) ? prev.chatRooms : [];
             return { ...prev, rooms: [newChatRoom, ...rooms] };
         });
     },
-    setCurrentChat: (chatRoom: Room | null) => {
-        set((prev) => {
-            if (!chatRoom) {
-                return { ...prev, currentChat: null };
-            }
-            const updateRooms = prev.rooms.map((room) => {
-                if (room.id === chatRoom.id) {
-                    return { ...room, ...chatRoom }
-                }
-                return room;
-            });
-
-            // sort rooms by last message
-            updateRooms.sort((a,b) => {
-                if (!a.messages.length) return 1;
-                if (!b.messages.length) return -1;
-                const lastMsg = (a.messages[a.messages.length - 1] as Message).createdAt;
-                const lastMsg2 = (b.messages[b.messages.length - 1] as Message).createdAt;
-                return new Date(lastMsg2).getTime() - new Date(lastMsg).getTime();
-            })
-            return { ...prev, rooms: updateRooms, currentChat: { ...prev.currentChat, ...chatRoom } };
-        });
-    }
 }));
 
 export default RoomStore;

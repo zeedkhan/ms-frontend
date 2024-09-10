@@ -91,7 +91,7 @@ const CodeBlock: FC<Props> = memo(({ language, value, ...props }) => {
     }
 
     return (
-        <div className="font-sans text-sm">
+        <div className="font-sans text-sm ">
             <div className="flex w-full items-center justify-between  text-zinc-100">
                 <span className="text-xs lowercase">{language}</span>
                 <div className="flex items-center space-x-1">
