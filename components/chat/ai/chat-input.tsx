@@ -37,7 +37,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
     return (
         <Card
             className={cn(
-                `min-h-[52px] shadow-lg max-w-3xl w-full px-4 absolute bottom-4 left-1/2 transform -translate-x-1/2`,
+                `min-h-[52px] max-w-lg md:max-w-xl xl:max-w-3xl w-full px-4 absolute bottom-4 left-1/2 transform -translate-x-1/2`,
                 isMultipleLine ? "rounded-3xl" : "rounded-full"
             )}>
             <CardContent className="p-0">

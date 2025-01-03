@@ -1,15 +1,14 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { EnhanceButton } from "@/components/ui/enhance-button";
 import { cn } from "@/lib/utils";
 import { ToolInvocation } from "ai"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import Markdown from "@/components/editor/markdown";
 import { SearchResults as SearchResultProps } from "@/types";
-import Image from "next/image";
 import { SearchImages } from "./tools/search-item";
-
+import { Earth } from "lucide-react";
 
 const AskForConfirmation = ({
     addResult,
@@ -87,11 +86,43 @@ const SearchResult: React.FC<{ result: SearchResultProps }> = ({ result }) => {
     const images = result.images.map((item) => item);
     return (
         <div className="text-sm flex flex-col space-y-4">
-            <p>{result.query}</p>
-            <SearchImages images={images} />
-            {/* <p>{result?.answer}</p> */}
-            {/* {result.results.map((item) => item.title).join(', ')} */}
-            {/* {JSON.stringify(result.results, null, 2)} */}
+            <Card className="w-full shadow-none">
+                <CardContent className="p-4 w-full">
+                    <Accordion type="single" collapsible className="p-0">
+                        <AccordionItem value="item-1">
+                            <AccordionTrigger>
+                                <CardTitle>Source</CardTitle>
+                            </AccordionTrigger>
+                            <AccordionContent>
+                                <CardTitle className="py-3">Query: {result.query}</CardTitle>
+                                <CardTitle className="pb-3">Images</CardTitle>
+                                <SearchImages images={images} />
+                                <CardTitle className="py-3">Results</CardTitle>
+                                <div className="grid grid-cols-2 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 gap-4">
+                                    {result.results.map((item) => (
+                                        <Card key={item.url} className="shadow-none">
+                                            <CardContent className="p-1 h-10 text-xs overflow-hidden">
+                                                <div className="flex space-x-4 h-full px-2">
+                                                    <div className="m-auto">
+                                                        <Earth />
+                                                    </div>
+                                                    <a
+                                                        href={item.url}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                    >
+                                                        {item.title}
+                                                    </a>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    ))}
+                                </div>
+                            </AccordionContent>
+                        </AccordionItem>
+                    </Accordion>
+                </CardContent>
+            </Card>
         </div>
     );
 };
@@ -118,8 +149,6 @@ const Result: React.FC<{ toolInvocation: ToolInvocation }> = ({
                         </AccordionContent>
                     </AccordionItem>
                 </Accordion>
-
-
             </div>
         );
     };

@@ -259,7 +259,7 @@ const ChatContent: React.FC<ChatContentProps> = ({
 
                                 {(!m.toolInvocations && (allMessages[msgIndex + 1]?.role || "") !== m.role) && (
                                     <div className="pt-2">
-                                        <Separator className='h-0.5 ' />
+                                        <Separator className='h-0.5 dark:bg-gray-600' />
                                     </div>
                                 )}
                             </div>
