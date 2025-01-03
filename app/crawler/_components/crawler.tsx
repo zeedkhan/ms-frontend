@@ -12,23 +12,25 @@ import { CircleCheckBig, CircleX } from "lucide-react";
 import { EnhanceButton } from "@/components/ui/enhance-button";
 import axios from "axios";
 import { UPLOAD_ROUTES } from "@/routes";
+import { supportCMS } from "./data";
+import Support from "./support";
 
 
-function isValidHttpUrl(string: string) {
-    try {
-        const newUrl = new URL(string);
-        return newUrl.protocol === 'http:' || newUrl.protocol === 'https:';
-    } catch (err) {
+type SupportStatus = "Supported" | "Not Supported" | "Need to manually check";
+
+function isUrlValid(url: string) {
+    var res = url.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&=]*)/g);
+    if (res == null)
         return false;
-    }
-};
+    else
+        return true;
+}
 
 type AIResponse = {
     cms: {
         possible_cms: string[],
         analytics_tools: string[],
         cms: string,
-        website_content: string,
         framework: string[],
     }
 }
@@ -83,24 +85,29 @@ const formSchema = z.object({
 });
 
 const Crawler = () => {
+    const [metadata, setMetadata] = useState<MetaData | null>(null);
+    const [info, setInfo] = useState<AIResponse | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             url: "",
         },
     });
-    const url = form.watch("url");
-    const [loading, setLoading] = useState<boolean>(false);
 
+    const url = form.watch("url");
     const [previewLink] = useDebounce(url, 1000);
+
     useEffect(() => {
-        if (!previewLink || !isValidHttpUrl(previewLink)) return;
+        if (!previewLink || !isUrlValid(previewLink)) return;
+        setMetadata(null);
+        setInfo(null);
         fetchMetadata(previewLink).then((data) => {
             setMetadata(data);
         });
     }, [previewLink]);
-    const [metadata, setMetadata] = useState<MetaData | null>(null);
-    const [info, setInfo] = useState<AIResponse | null>(null);
+
 
     const AIDecistion = async (metaData: MetaData, url: string) => {
         try {
@@ -117,6 +124,7 @@ const Crawler = () => {
         try {
             setLoading(true);
             if (!metadata) return;
+            setInfo(null);
             await AIDecistion(metadata, values.url);
         } catch (err) {
             console.log(err)
@@ -129,7 +137,7 @@ const Crawler = () => {
         <>
             <div className="bg-muted w-full max-h-full h-fit mx-auto rounded-md overflow-hidden overflow-y-auto  border">
                 <div className="text-gray-600 w-full m-auto flex items-center justify-center h-full p-8">
-                    {isValidHttpUrl(previewLink) && metadata ? (
+                    {isUrlValid(previewLink) && metadata ? (
                         <Card className="text-center px-8 h-full w-full">
                             <CardContent className="h-full w-full">
                                 <figure
@@ -145,39 +153,36 @@ const Crawler = () => {
                                         />
                                     </div>
                                     {info && (
-                                        <figcaption className="py-8 w-full">
+                                        <figcaption className="pt-8 pb-4 w-full">
                                             <Accordion type="single" collapsible className="text-start">
                                                 <AccordionItem value="item-1">
-                                                    <AccordionTrigger>CMS?</AccordionTrigger>
+                                                    <AccordionTrigger>CMS</AccordionTrigger>
                                                     <AccordionContent>
                                                         {info.cms.cms}
                                                     </AccordionContent>
                                                 </AccordionItem>
                                                 <AccordionItem value="item-2">
-                                                    <AccordionTrigger>Description</AccordionTrigger>
-                                                    <AccordionContent>
-                                                        <p>{info.cms.website_content}</p>
-                                                    </AccordionContent>
-                                                </AccordionItem>
-                                                <AccordionItem value="item-3">
                                                     <AccordionTrigger>Analytics</AccordionTrigger>
                                                     <AccordionContent>
                                                         {info.cms.analytics_tools.join(", ")}
                                                     </AccordionContent>
                                                 </AccordionItem>
-                                                <AccordionItem value="item-4">
+                                                <AccordionItem value="item-3">
                                                     <AccordionTrigger>Frameworks</AccordionTrigger>
                                                     <AccordionContent>
                                                         {info.cms.framework.join(", ")}
                                                     </AccordionContent>
                                                 </AccordionItem>
                                             </Accordion>
+
+                                            {/* Display Support CMS */}
+                                            <Support url={previewLink} cms={info.cms.cms} />
                                         </figcaption>
                                     )}
-                                    <figcaption className="pb-8 w-full">
+                                    {/* <figcaption className="w-full">
                                         <p>{metadata.title}</p>
                                         <p>{metadata.description}</p>
-                                    </figcaption>
+                                    </figcaption> */}
                                 </figure>
                             </CardContent>
                         </Card>
@@ -209,12 +214,13 @@ const Crawler = () => {
                                 <FormControl>
                                     <div className="flex justify-between items-center border rounded-md pr-2">
                                         <Input
+                                            autoSave="on"
                                             className="focus-visible:ring-0 outline-none border-none shadow-none"
                                             placeholder="Enter url to crawl a website"
                                             {...field}
                                         />
                                         <div>
-                                            {isValidHttpUrl(form.getValues().url) ? (
+                                            {isUrlValid(form.getValues().url) ? (
                                                 <CircleCheckBig
                                                     className="text-green-500"
                                                 />
@@ -233,7 +239,7 @@ const Crawler = () => {
                     />
                     <EnhanceButton
                         type="submit"
-                        disabled={loading || !isValidHttpUrl(form.getValues().url)}
+                        disabled={loading || !isUrlValid(form.getValues().url)}
                     >
                         Crawl
                     </EnhanceButton>

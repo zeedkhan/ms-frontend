@@ -14,7 +14,7 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
             <Card
                 className={cn(
                     "flex p-3 ",
-                    "h-[calc(100vh-56px)] border-none shadow-none ",
+                    "h-[calc(100vh-56px)] border-none shadow-none bg-zinc-50 dark:bg-muted",
                 )}
             >
                 <ListChat />

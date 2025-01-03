@@ -101,6 +101,7 @@
     "react-image-crop": "^11.0.6",
     "react-lottie": "^1.2.4",
     "react-markdown": "^9.0.1",
+    "react-resizable-panels": "^2.1.2",
     "react-spinners": "^0.13.8",
     "react-syntax-highlighter": "^15.5.0",
     "rehype-raw": "^7.0.0",

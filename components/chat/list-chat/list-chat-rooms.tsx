@@ -24,6 +24,8 @@ interface DisplayRoomProps {
     createRoom: ReactNode;
     rooms: Room[]
     type: "chat" | "ai";
+    open: boolean;
+    height?: string;
 }
 
 const staggerVariants = {
@@ -44,7 +46,9 @@ const ListChatRooms: React.FC<DisplayRoomProps> = ({
     extraClasses,
     createRoom,
     type,
-    rooms
+    rooms,
+    open,
+    height = "h-full",
 }) => {
     const pathname = usePathname();
     const [currentChatId, setCurrentChatId] = useState<string | null>(null);
@@ -65,8 +69,9 @@ const ListChatRooms: React.FC<DisplayRoomProps> = ({
 
     return (
         <ScrollArea
+            style={{ height: "100%" }}
             className={cn(
-                "w-full h-full p-2",
+                `${!height && "h-full"}`,
                 extraClasses && extraClasses
             )}
         >
@@ -74,12 +79,29 @@ const ListChatRooms: React.FC<DisplayRoomProps> = ({
                 initial="initial"
                 animate="animate"
                 variants={staggerVariants}
-                className="list-none"
+                className="list-none "
             >
+                <motion.li>
+                    <div className="py-4 text-center font-semibold flex items-center justify-center space-x-2">
+                        <img
+                            src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Robot.png"
+                            alt="Robot"
+                            width="25"
+                            height="25"
+                        />
+                        {open && (
+                            <p>
+                                AI Chat Rooms
+                            </p>
+                        )}
+
+                    </div>
+                </motion.li>
+
                 <motion.li
                     className={cn(
-                        "cursor-pointer shadow-xl",
-                        "rounded-md sticky top-0 z-20",
+                        "cursor-pointer",
+                        "rounded-md ",
                     )}>
                     {createRoom}
                 </motion.li>
@@ -89,14 +111,14 @@ const ListChatRooms: React.FC<DisplayRoomProps> = ({
                         key={idx}
                         variants={itemVariants}
                         className={cn(
-                            "cursor-pointer shadow-md flex justify-between items-center",
+                            "cursor-pointer flex justify-between items-center",
                             "pl-3 border rounded-md my-2",
-                            currentChatId === chat.id && "shadow bg-teal-200",
+                            currentChatId === chat.id && " bg-gray-100/90 dark:bg-muted",
                         )}
                     >
                         <Link
                             href={chatRoute + "/" + chat.id}
-                            className="flex-1 py-0.5 flex items-center justify-between hover:scale-95 transition-transform duration-50 ease-in-out">
+                            className="flex-1 py-0.5 flex items-center justify-between">
                             <div className='flex items-center space-x-2'>
                                 <Avatar className='w-[35px] h-[35px]'>
                                     <AvatarImage

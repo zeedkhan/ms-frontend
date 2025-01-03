@@ -15,7 +15,7 @@ type ChatHeaderProps = {
 
 const ChatHeader: React.FC<ChatHeaderProps> = ({ room, showSetting }) => {
     return (
-        <Card className="md:mx-8">
+        <Card className="md:mx-8 shadow-none">
             <CardContent className='flex px-4 py-2'>
                 <div className='flex space-x-4'>
                     <Link

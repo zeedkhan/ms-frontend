@@ -71,19 +71,13 @@ function CreateRoomModal() {
 
     return (
         <Dialog onOpenChange={setOpen} open={open}>
-            <DialogTrigger asChild>
+            <DialogTrigger asChild >
                 <EnhanceButton
-                    variant="expandIcon"
-                    Icon={ArrowRightIcon}
-                    iconPlacement="right"
                     className={cn(
-                       "w-full h-full rounded-full md:rounded-md",
+                        "p-2 rounded-full shadow-none",
                     )}
                 >
-                    <div className="flex space-x-2 items-center">
-                        <PlusCircleIcon />
-                        <p>Create a room</p>
-                    </div>
+                    <PlusCircleIcon />
                 </EnhanceButton>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
